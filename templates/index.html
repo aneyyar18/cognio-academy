@@ -3,190 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TutorConnect</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" type="image/png" href="../static/images/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/style.css"> <!-- External stylesheet -->
+    <title>TutorConnect - Your Learning Connection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Add your existing styles here */
-
+        /* Apply Inter font globally */
         body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.main-content {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.main-title {
-    font-size: 2.5em;
-    color: #000000;
-    margin-bottom: 0.5em;
-}
-
-.subtitle {
-    font-size: 1.2em;
-    color: #666666;
-    margin-bottom: 2em;
-}
-
-
-.find-tutors-button {
-    background-color: #0a66c2;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 20px;
-}
-
-.find-tutors-button:hover {
-    background-color: #004182;
-}
-
-.stats-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat h2 {
-    font-size: 2em;
-    color: #0a66c2;
-    margin: 0;
-}
-
-.stat p {
-    color: #666666;
-    margin: 0;
-}
-
-.language-greeting {
-    margin-top: 40px;
-    font-size: 1.5em;
-    color: #0a66c2;
-    position: absolute;
-    bottom: 20px;
-}
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 as base dark background */
+        }
+        /* Custom gradient for hero or accents */
+        .gradient-accent {
+            background: linear-gradient(90deg, #22d3ee 0%, #67e8f9 100%); /* cyan-500 to cyan-300 */
+        }
+        /* Custom text gradient for logo */
+        .logo-gradient {
+            background: linear-gradient(90deg, #67e8f9 0%, #ffffff 100%); /* cyan-300 to white */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent; /* Standard property */
+        }
+        /* Custom button style */
+        .btn-primary {
+            @apply bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1;
+        }
+        .btn-secondary {
+            @apply bg-transparent border-2 border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+        }
+        /* Simple connected dots background element (optional) */
+        .dots-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* Behind content */
+            opacity: 0.1; /* Subtle */
+        }
+        /* Add more styling for dots if needed */
     </style>
 </head>
-<body>
-<header>
-    <div class="top-panel">
-        <div class="logo">
-            <h1>
-                Tutor<span class="highlight-blue">Connect</span>
-            </h1>
+<body class="text-gray-200">
+
+<nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="text-2xl font-bold">
+            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
+        </a>
+        <div class="hidden md:flex space-x-6 items-center">
+            <a href="#home" class="hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a>
+            <a href="#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+            <a href="#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
+            <a href="#login" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Login</a>
+            <a href="/signup/student" class="bg-transparent border border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
         </div>
-        
-        <!-- Social media icons -->
-        <div class="social-icons">
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-        </div>
-        
-        <nav>
-            <a href="#about">About</a>
-            <a href="#reviews">Reviews</a>
-            <a href="#contact">Contact</a>
-            <a href="login.html">Log in</a>
-        </nav>
-        <div class="auth-buttons">
-            <a href="register.html">Join now</a>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
         </div>
     </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
+        <a href="#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
+        <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
+        <a href="#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+        <a href="#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
+        <a href="#login" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
+        <a href="/signup/student" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Sign Up</a>
+    </div>
+</nav>
+
+<header id="home" class="relative bg-slate-900 pt-24 pb-32 text-center overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+            Connect with Expert Tutors, <span class="text-cyan-400">Instantly</span>.
+        </h1>
+        <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+            Unlock your potential with personalized online tutoring. Find the perfect tutor for any subject, anytime.
+        </p>
+        <div class="space-x-4">
+            <a href="#tutors" class="btn-primary">Find Your Tutor</a>
+            <a href="#become-tutor" class="btn-secondary">Become a Tutor</a>
+        </div>
+    </div>
+    <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-slate-900 to-transparent"></div>
 </header>
 
-<main class="main-content">
-    <!-- Title in white section -->
-    <h1 class="main-title">
-        Connecting students with <span class="highlight-line">affordable and quality educators.</span>
-    </h1>
-
-    <!-- Find Tutors Button -->
-    <button class="find-tutors-button">Find Tutors</button>
-
-    <!-- Stats Section -->
-    <div class="stats-container">
-        <div class="stat">
-            <h2>500+</h2>
-            <p>Tutors</p>
-        </div>
-        <div class="stat">
-            <h2>10,000+</h2>
-            <p>Users</p>
-        </div>
-        <div class="stat">
-            <h2>24/7</h2>
-            <p>Hours Open</p>
+<section id="features" class="py-20 bg-slate-800">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-2 text-cyan-400">How It Works</h2>
+        <p class="text-gray-400 mb-12">Simple steps to start learning.</p>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="bg-slate-700 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                <div class="text-5xl text-cyan-400 mb-4">🔍</div> <h3 class="text-xl font-semibold mb-2">Search Tutors</h3>
+                <p class="text-gray-400">Browse profiles, subjects, and ratings to find the perfect match for your needs.</p>
+            </div>
+            <div class="bg-slate-700 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                <div class="text-5xl text-cyan-400 mb-4">💬</div> <h3 class="text-xl font-semibold mb-2">Connect & Schedule</h3>
+                <p class="text-gray-400">Message tutors directly and schedule sessions that fit your timetable.</p>
+            </div>
+            <div class="bg-slate-700 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                <div class="text-5xl text-cyan-400 mb-4">💡</div> <h3 class="text-xl font-semibold mb-2">Learn & Grow</h3>
+                <p class="text-gray-400">Engage in personalized online sessions and achieve your academic goals.</p>
+            </div>
         </div>
     </div>
+</section>
+
+<section id="tutors" class="py-20 bg-slate-900">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-2 text-cyan-400">Meet Our Top Tutors</h2>
+        <p class="text-gray-400 mb-12">Experienced professionals ready to help you succeed.</p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-slate-800 rounded-lg shadow-lg p-6 text-center transform hover:-translate-y-2 transition duration-300">
+                <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Tutor+1" alt="Tutor 1" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                <h4 class="text-lg font-semibold mb-1">Jane Doe</h4>
+                <p class="text-cyan-400 mb-2">Mathematics Expert</p>
+                <p class="text-sm text-gray-400">5+ years experience, specializing in Calculus and Algebra.</p>
+                <a href="#" class="mt-4 inline-block text-cyan-500 hover:text-cyan-300 transition duration-300">View Profile</a>
+            </div>
+            <div class="bg-slate-800 rounded-lg shadow-lg p-6 text-center transform hover:-translate-y-2 transition duration-300">
+                <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Tutor+2" alt="Tutor 2" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                <h4 class="text-lg font-semibold mb-1">John Smith</h4>
+                <p class="text-cyan-400 mb-2">Physics & Chemistry</p>
+                <p class="text-sm text-gray-400">PhD in Physics, passionate about making science accessible.</p>
+                <a href="#" class="mt-4 inline-block text-cyan-500 hover:text-cyan-300 transition duration-300">View Profile</a>
+            </div>
+            <div class="bg-slate-800 rounded-lg shadow-lg p-6 text-center transform hover:-translate-y-2 transition duration-300">
+                <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Tutor+3" alt="Tutor 3" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                <h4 class="text-lg font-semibold mb-1">Alice Green</h4>
+                <p class="text-cyan-400 mb-2">English Literature</p>
+                <p class="text-sm text-gray-400">Masters in Literature, helps students excel in writing.</p>
+                <a href="#" class="mt-4 inline-block text-cyan-500 hover:text-cyan-300 transition duration-300">View Profile</a>
+            </div>
+            <div class="bg-slate-800 rounded-lg shadow-lg p-6 text-center transform hover:-translate-y-2 transition duration-300">
+                <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Tutor+4" alt="Tutor 4" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                <h4 class="text-lg font-semibold mb-1">Bob White</h4>
+                <p class="text-cyan-400 mb-2">Computer Science</p>
+                <p class="text-sm text-gray-400">Software Engineer, expert in Python and Java programming.</p>
+                <a href="#" class="mt-4 inline-block text-cyan-500 hover:text-cyan-300 transition duration-300">View Profile</a>
+            </div>
+        </div>
+        <div class="mt-12">
+            <a href="#tutors" class="btn-primary">See All Tutors</a>
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="py-20 bg-slate-800">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-cyan-400">What Our Students Say</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <blockquote class="bg-slate-700 p-6 rounded-lg shadow-lg">
+                <p class="text-gray-300 italic mb-4">"TutorConnect helped me boost my grades significantly! My tutor was patient and explained complex topics clearly. Highly recommended!"</p>
+                <footer class="text-right text-cyan-400 font-semibold">- Sarah K., High School Student</footer>
+            </blockquote>
+            <blockquote class="bg-slate-700 p-6 rounded-lg shadow-lg">
+                <p class="text-gray-300 italic mb-4">"Finding a qualified chemistry tutor was so easy. The platform is user-friendly, and the virtual classroom works perfectly."</p>
+                <footer class="text-right text-cyan-400 font-semibold">- Michael P., College Student</footer>
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<section id="become-tutor" class="py-20 bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">Ready to Share Your Knowledge?</h2>
+        <p class="text-lg mb-8">Join our community of expert tutors and start making a difference today.</p>
+        <a href="#signup" class="bg-white text-cyan-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 transform hover:-translate-y-1">Become a Tutor</a>
+    </div>
+</section>
+
+<footer class="bg-slate-900 py-10 text-gray-400">
+    <div class="container mx-auto px-6 text-center md:flex md:justify-between md:items-center">
+        <div>
+            <p>&copy; 2025 TutorConnect. All rights reserved.</p>
+            <p class="text-sm">Designed to connect learners and educators.</p>
+        </div>
+        <div class="mt-4 md:mt-0 space-x-4">
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Privacy Policy</a>
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Terms of Service</a>
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Contact Us</a>
+        </div>
+    </div>
+</footer>
 
 <script>
-    function showForm(type) {
-        const formContainer = document.getElementById('form-container');
-        const additionalFields = document.getElementById('additional-fields');
-        additionalFields.innerHTML = '';
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-        if (type === 'tutor') {
-            additionalFields.innerHTML = `
-                <label for="experience">Experience:</label>
-                <input type="text" id="experience" name="experience" placeholder="E.g., 2 years tutoring Math" required>
+    menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
 
-                <label for="availability">Availability:</label>
-                <input type="text" id="availability" name="availability" placeholder="E.g., Weekends, Evenings" required>
-            `;
-        } else if (type === 'student') {
-            additionalFields.innerHTML = `
-                <label for="grade">Grade Level:</label>
-                <input type="text" id="grade" name="grade" placeholder="E.g., 10th Grade" required>
-
-                <label for="schedule">Preferred Schedule:</label>
-                <input type="text" id="schedule" name="schedule" placeholder="E.g., Weekdays, 4-6 PM" required>
-            `;
+    // Close menu when a link is clicked (optional)
+    mobileMenu.addEventListener('click', (event) => {
+        if (event.target.tagName === 'A') {
+            mobileMenu.classList.add('hidden');
         }
-
-        formContainer.classList.add('active');
-    }
-
-    function handleFormSubmission(event) {
-        event.preventDefault();
-        alert('Form submitted! Thank you for your input.');
-        document.getElementById('form-container').classList.remove('active');
-    }
-
-    function setActiveTab(tab) {
-        const tabs = document.querySelectorAll('.search-tab');
-        tabs.forEach(t => t.classList.remove('active'));
-        
-        if (tab === 'care') {
-            tabs[0].classList.add('active');
-        } else {
-            tabs[1].classList.add('active');
-        }
-    }
+    });
 </script>
+
 </body>
 </html>

@@ -1,111 +1,99 @@
-from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
-import bcrypt
+# app.py
+from flask import Flask, render_template, request, url_for, redirect, flash
 
+# Initialize the Flask application
 app = Flask(__name__)
+# Secret key is needed for flashing messages
+app.secret_key = 'your_very_secret_key' # Change this in production!
 
-def create_table():
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            dob DATE NOT NULL,
-            role TEXT CHECK(role IN ('student', 'educator')) NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+# Route for the homepage (index.html)
+@app.route('/')
+def index():
+    """Renders the homepage."""
+    print("Serving homepage (index.html).")
+    # Make sure you have an 'index.html' file in your 'templates' folder
+    # This should be the homepage UI created earlier.
+    return render_template('index.html') # Changed from redirect
 
-# Call create_table to ensure the table is created
-create_table()
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
+# Route to display the student signup page
+@app.route('/signup/student')
+def signup_student_form():
+    """Renders the student signup form."""
+    print("Serving signup form page.")
+    return render_template('register.html')
+
+# Route to handle the form submission
+@app.route('/signup/student/submit', methods=['POST'])
+def signup_student_submit():
+    """Handles the submission of the student signup form."""
     if request.method == 'POST':
-        first_name = request.form['first-name']
-        last_name = request.form['last-name']
-        email = request.form['email']
-        password = request.form['password']
-        dob = request.form['dob']
+        # Extract form data (add more fields as needed)
+        fullname = request.form.get('fullname')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm-password')
+        dob = request.form.get('dob')
+        timezone = request.form.get('timezone')
+        subjects = request.form.getlist('subjects[]') # Get list for checkboxes
+        learning_goals = request.form.get('learning-goals')
+        terms = request.form.get('terms')
 
-        name_error = email_error = password_error = dob_error = None
-
-        # Basic validation
-        if not first_name or not last_name:
-            name_error = 'Both First Name and Last Name are required.'
-
+        # --- Basic Server-Side Validation (Example) ---
+        errors = []
+        if not fullname:
+            errors.append("Full Name is required.")
         if not email:
-            email_error = 'Email is required.'
-        elif len(email) == 0:
-            email_error = 'Invalid email format.'
-
-        if not password:
-            password_error = 'Password is required.'
-        elif len(password) < 6:
-            password_error = 'Password must be at least 6 characters long.'
-
+            errors.append("Email is required.")
+        if not password or len(password) < 8:
+            errors.append("Password is required and must be at least 8 characters.")
+        if password != confirm_password:
+            errors.append("Passwords do not match.")
         if not dob:
-            dob_error = 'Date of Birth is required.'
+            errors.append("Date of Birth is required.")
+        if not timezone:
+            errors.append("Timezone is required.")
+        if not terms:
+            errors.append("You must agree to the Terms of Service and Privacy Policy.")
 
-        if name_error or email_error or password_error or dob_error:
-            return render_template('signup.html', name_error=name_error, email_error=email_error, 
-                                   password_error=password_error, dob_error=dob_error)
+        if errors:
+            # If there are errors, flash them and re-render the form
+            for error in errors:
+                flash(error, 'error') # Use 'error' category for styling if desired
+            # Re-populate form with previous data (optional, good UX)
+            # For simplicity, just re-rendering the blank form here
+            return redirect(url_for('signup_student_form'))
 
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # --- If Validation Passes ---
+        # 1. TODO: Securely hash the password before storing
+        # hashed_password = generate_password_hash(password) # Example using Werkzeug
 
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
+        # 2. TODO: Store the user data in your database
+        print("--- Form Data Received ---")
+        print(f"Full Name: {fullname}")
+        print(f"Email: {email}")
+        print(f"DOB: {dob}")
+        print(f"Timezone: {timezone}")
+        print(f"Subjects: {subjects}")
+        print(f"Goals: {learning_goals}")
+        print(f"Terms Agreed: {terms}")
+        print("--- End Form Data ---")
+        # Never print passwords!
 
-        try:
-            cursor.execute('''
-                INSERT INTO users (first_name, last_name, email, password, dob, role)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (first_name, last_name, email, hashed_password, dob, 'student'))  # Default role
-            conn.commit()
-            return redirect(url_for('role_selection'))
-        except sqlite3.IntegrityError:
-            email_error = "Email already exists."
-            return render_template('signup.html', email_error=email_error)
-        finally:
-            conn.close()
+        # 3. Redirect to a success page or login page
+        flash('Account created successfully! Please log in.', 'success')
+        # return redirect(url_for('login_page')) # Redirect to login after success
+        return redirect(url_for('signup_student_form')) # Or redirect back for now
 
-    return render_template('signup.html')
+    # If method is not POST (shouldn't happen with route definition)
+    return redirect(url_for('signup_student_form'))
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
 
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
 
-        cursor.execute('''
-            SELECT password FROM users WHERE email = ?
-        ''', (email,))
-        user = cursor.fetchone()
-        conn.close()
 
-        if user and bcrypt.checkpw(password.encode('utf-8'), user[0]):
-            return redirect(url_for('home'))
-        else:
-            error_message = 'Invalid credentials or no account found.'
-            return render_template('login.html', error_message=error_message)
-
-    return render_template('login.html')
-
-@app.route('/role-selection')
-def role_selection():
-    return render_template('role_selection.html')
-
-@app.route('/home')
-def home():
-    return 'Welcome to the home page!'
-
+# Run the Flask app
 if __name__ == '__main__':
+    # Debug=True allows auto-reloading and provides detailed error pages
+    # Turn off debug mode in production!
     app.run(debug=True)
+    

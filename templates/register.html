@@ -3,176 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1b1f23; /* Same gray background as home page */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .signup-container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 2em;
-            width: 90%;
-            max-width: 500px;
-        }
-
-        .signup-container h1 {
-            font-family: 'Roboto Mono', monospace;
-            color: #333;
-            margin-bottom: 1.5em;
-            text-align: center;
-        }
-
-        .signup-container form {
-            display: flex;
-            flex-direction: column;
-            gap: 1em;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: bold;
-            margin-bottom: 0.5em;
-        }
-
-        .form-group input {
-            padding: 0.75em;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        .form-group .name-fields {
-            display: flex;
-            gap: 1em;
-        }
-
-        .form-group .name-fields input {
-            flex: 1;
-        }
-
-        .form-group button {
-            background-color: #ff4b33; /* Orange color */
-            color: #fff;
-            padding: 0.75em;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .form-group button:hover {
-            background-color: #e03b21; /* Darker orange on hover */
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.875em;
-            margin-top: 0.5em;
-            text-align: center;
-        }
-    </style>
+    <title>Student Signup - TutorConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="signup-container">
-        <h1>Create an Account</h1>
-        <form id="signup-form" method="POST" action="/signup">
-            <div class="form-group">
-                <label for="first-name">First Name</label>
-                <div class="name-fields">
-                    <input type="text" id="first-name" name="first-name" placeholder="First Name" required>
-                    <input type="text" id="last-name" name="last-name" placeholder="Last Name" required>
+<body class="flex flex-col min-h-screen">
+
+<nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold">
+            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
+        </a>
+        <div class="hidden md:flex space-x-6 items-center">
+            <a href="{{ url_for('index') }}#home" class="hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a>
+            <a href="{{ url_for('index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+            <a href="{{ url_for('index') }}#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
+            <a href="#login" class="hover:text-cyan-400 transition duration-300">Login</a>
+            <a href="{{ url_for('signup_student_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+        </div>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
+        <a href="{{ url_for('index') }}#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
+        <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
+        <a href="{{ url_for('index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+        <a href="{{ url_for('index') }}#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
+        <a href="#login" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
+        <a href="{{ url_for('signup_student_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
+    </div>
+</nav>
+
+<main class="flex-grow container mx-auto px-6 py-12 md:py-20 flex items-center justify-center">
+    <div class="bg-slate-800 p-8 md:p-12 rounded-lg shadow-2xl w-full max-w-2xl">
+        <h1 class="text-3xl font-bold text-center text-cyan-400 mb-8">Create Your Student Account</h1>
+        <p class="text-center text-gray-400 mb-8">Tell us a bit more about yourself to get started.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-4">
+            {% for category, message in messages %}
+            <div class="p-4 rounded-md {{ 'bg-red-100 border border-red-400 text-red-700' if category == 'error' else 'bg-green-100 border border-green-400 text-green-700' }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form id="signup-form" action="{{ url_for('signup_student_submit') }}" method="POST" class="space-y-6">
+
+            <fieldset class="fieldset-group">
+                <legend class="fieldset-legend">Personal Information</legend>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                        <label for="fullname" class="block text-sm font-medium text-gray-300 mb-1">Full Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="fullname" name="fullname" required
+                               class="form-input"
+                               placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label for="dob" class="block text-sm font-medium text-gray-300 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" id="dob" name="dob" required
+                               class="form-input"
+                               placeholder="YYYY-MM-DD">
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number (Optional)</label>
+                        <input type="tel" id="phone" name="phone"
+                               class="form-input"
+                               placeholder="(123) 456-7890">
+                    </div>
+                    <div>
+                        <label for="timezone" class="block text-sm font-medium text-gray-300 mb-1">Timezone <span class="text-red-500">*</span></label>
+                        <select id="timezone" name="timezone" required class="form-select">
+                            <option value="" disabled selected>Select your timezone</option>
+                            <option value="America/Los_Angeles">(GMT-08:00) Pacific Time (US & Canada)</option>
+                            <option value="America/Denver">(GMT-07:00) Mountain Time (US & Canada)</option>
+                            <option value="America/Chicago">(GMT-06:00) Central Time (US & Canada)</option>
+                            <option value="America/New_York">(GMT-05:00) Eastern Time (US & Canada)</option>
+                            <option value="Europe/London">(GMT+00:00) London</option>
+                            <option value="Europe/Berlin">(GMT+01:00) Berlin</option>
+                        </select>
+                    </div>
                 </div>
-                <span class="error-message" id="name-error"></span>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Email" required>
-                <span class="error-message" id="email-error"></span>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-                <span class="error-message" id="password-error"></span>
-            </div>
-            <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <input type="date" id="dob" name="dob" required>
-                <span class="error-message" id="dob-error"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit">Create Account</button>
+            </fieldset>
+
+            <fieldset class="fieldset-group">
+                <legend class="fieldset-legend">Account Credentials</legend>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email Address <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" required
+                               class="form-input"
+                               placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="password" name="password" required minlength="8"
+                               class="form-input"
+                               placeholder="Min. 8 characters">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="confirm-password" name="confirm-password" required
+                               class="form-input"
+                               placeholder="Re-enter password">
+                        <p id="password-match-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match.</p>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="fieldset-group">
+                <legend class="fieldset-legend">Learning Information</legend>
+                <div class="space-y-6 mt-4">
+                    <div>
+                        <label for="study-level" class="block text-sm font-medium text-gray-300 mb-1">Current Study Level (Optional)</label>
+                        <select id="study-level" name="study-level" class="form-select">
+                            <option value="">Select your level</option>
+                            <option value="middle-school">Middle School</option>
+                            <option value="high-school">High School</option>
+                            <option value="undergraduate">Undergraduate</option>
+                            <option value="graduate">Graduate</option>
+                            <option value="professional">Professional Development</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Subjects You're Interested In (Select all that apply)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+                            <div class="flex items-center">
+                                <input id="subject-math" name="subjects[]" type="checkbox" value="math" class="form-checkbox">
+                                <label for="subject-math" class="ml-2 text-sm text-gray-300 cursor-pointer">Mathematics</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-physics" name="subjects[]" type="checkbox" value="physics" class="form-checkbox">
+                                <label for="subject-physics" class="ml-2 text-sm text-gray-300 cursor-pointer">Physics</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-chemistry" name="subjects[]" type="checkbox" value="chemistry" class="form-checkbox">
+                                <label for="subject-chemistry" class="ml-2 text-sm text-gray-300 cursor-pointer">Chemistry</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-biology" name="subjects[]" type="checkbox" value="biology" class="form-checkbox">
+                                <label for="subject-biology" class="ml-2 text-sm text-gray-300 cursor-pointer">Biology</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-english" name="subjects[]" type="checkbox" value="english" class="form-checkbox">
+                                <label for="subject-english" class="ml-2 text-sm text-gray-300 cursor-pointer">English/Literature</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-history" name="subjects[]" type="checkbox" value="history" class="form-checkbox">
+                                <label for="subject-history" class="ml-2 text-sm text-gray-300 cursor-pointer">History</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-cs" name="subjects[]" type="checkbox" value="cs" class="form-checkbox">
+                                <label for="subject-cs" class="ml-2 text-sm text-gray-300 cursor-pointer">Computer Science</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="subject-language" name="subjects[]" type="checkbox" value="language" class="form-checkbox">
+                                <label for="subject-language" class="ml-2 text-sm text-gray-300 cursor-pointer">Foreign Languages</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="learning-goals" class="block text-sm font-medium text-gray-300 mb-1">What are your learning goals? (Optional)</label>
+                        <textarea id="learning-goals" name="learning-goals" rows="4"
+                                  class="form-textarea"
+                                  placeholder="E.g., Improve grades in Algebra, prepare for SATs, learn Python basics..."></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div>
+                <div class="flex items-center mb-6">
+                    <input id="terms" name="terms" type="checkbox" required class="form-checkbox">
+                    <label for="terms" class="ml-2 block text-sm text-gray-400">
+                        I agree to the <a href="#" class="text-cyan-400 hover:underline">Terms of Service</a> and <a href="#" class="text-cyan-400 hover:underline">Privacy Policy</a>. <span class="text-red-500">*</span>
+                    </label>
+                </div>
+
+                <div>
+                    <button type="submit" id="submit-button" class="btn-primary">
+                        Create Account
+                    </button>
+                </div>
             </div>
         </form>
+
+        <p class="mt-8 text-center text-sm text-gray-400">
+            Already have an account?
+            <a href="#login" class="font-medium text-cyan-400 hover:text-cyan-300 hover:underline">
+                Login here
+            </a>
+        </p>
     </div>
-    <script>
-        document.getElementById('signup-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+</main>
 
-            // Basic validation (including password length)
-            const firstName = document.getElementById('first-name').value.trim();
-            const lastName = document.getElementById('last-name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const dob = document.getElementById('dob').value;
-            const nameError = document.getElementById('name-error');
-            const emailError = document.getElementById('email-error');
-            const passwordError = document.getElementById('password-error');
-            const dobError = document.getElementById('dob-error');
+<footer class="bg-slate-900 py-10 text-gray-400 mt-auto">
+    <div class="container mx-auto px-6 text-center md:flex md:justify-between md:items-center">
+        <div>
+            <p>&copy; 2025 TutorConnect. All rights reserved.</p>
+            <p class="text-sm">Designed to connect learners and educators.</p>
+        </div>
+        <div class="mt-4 md:mt-0 space-x-4">
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Privacy Policy</a>
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Terms of Service</a>
+            <a href="#" class="hover:text-cyan-400 transition duration-300">Contact Us</a>
+        </div>
+    </div>
+</footer>
 
-            let valid = true;
+<script>
+    // Mobile Menu Toggle
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-            if (!firstName || !lastName) {
-                nameError.textContent = 'Both First Name and Last Name are required.';
-                valid = false;
-            } else {
-                nameError.textContent = '';
-            }
+    if (menuButton && mobileMenu) { // Check if elements exist
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-            if (!email) {
-                emailError.textContent = 'Email is required.';
-                valid = false;
-            } else {
-                emailError.textContent = '';
-            }
-
-            if (!password) {
-                passwordError.textContent = 'Password is required.';
-                valid = false;
-            } else if (password.length < 6) {
-                passwordError.textContent = 'Password must be at least 6 characters long.';
-                valid = false;
-            } else {
-                passwordError.textContent = '';
-            }
-
-            if (!dob) {
-                dobError.textContent = 'Date of Birth is required.';
-                valid = false;
-            } else {
-                dobError.textContent = '';
-            }
-
-            if (valid) {
-                // Redirect to role selection page after successful sign up
-                window.location.href = 'role-selection.html';
+        mobileMenu.addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                mobileMenu.classList.add('hidden');
             }
         });
-    </script>
+    }
+
+
+    // Basic Password Match Validation (Client-side)
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordMatchError = document.getElementById('password-match-error');
+    const signupForm = document.getElementById('signup-form');
+    const submitButton = document.getElementById('submit-button');
+
+    function validatePasswordMatch() {
+        // Ensure elements exist before accessing properties
+        if (!passwordInput || !confirmPasswordInput || !passwordMatchError || !submitButton) {
+            console.warn("Signup form validation elements not found.");
+            return;
+        }
+
+        if (passwordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
+            passwordMatchError.classList.remove('hidden');
+            confirmPasswordInput.classList.add('!border-red-500');
+            confirmPasswordInput.classList.remove('focus:ring-cyan-500');
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            passwordMatchError.classList.add('hidden');
+            confirmPasswordInput.classList.remove('!border-red-500');
+            confirmPasswordInput.classList.add('focus:ring-cyan-500');
+            // Check overall form validity for enabling button
+            submitButton.disabled = !signupForm.checkValidity();
+            if (!submitButton.disabled) {
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    }
+
+    if (passwordInput && confirmPasswordInput) {
+        passwordInput.addEventListener('input', validatePasswordMatch);
+        confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+    }
+
+    // Ensure submit button state is correct on initial load/changes
+    if (signupForm) {
+        signupForm.addEventListener('input', () => {
+            validatePasswordMatch(); // Re-validate password match on any form input
+        });
+    }
+
+    // Client-side check before submitting (supplements server-side validation)
+    if (signupForm) {
+        signupForm.addEventListener('submit', (event) => {
+            // Basic check again, though server-side is the authority
+            if (passwordInput && confirmPasswordInput && passwordInput.value !== confirmPasswordInput.value) {
+                event.preventDefault(); // Stop submission
+                alert('Passwords do not match!');
+                confirmPasswordInput.focus();
+                return;
+            }
+            const termsCheckbox = document.getElementById('terms');
+            if (termsCheckbox && !termsCheckbox.checked) {
+                event.preventDefault(); // Stop submission
+                alert('Please agree to the Terms of Service and Privacy Policy.');
+                return;
+            }
+            // If checks pass, let the form submit to the Flask endpoint
+            console.log('Client-side checks passed, submitting form...');
+        });
+    }
+
+</script>
+
 </body>
 </html>
+    
