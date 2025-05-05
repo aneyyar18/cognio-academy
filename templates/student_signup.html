@@ -14,16 +14,16 @@
 
 <nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="{{ url_for('index') }}" class="text-2xl font-bold">
+        <a href="{{ url_for('main.index') }}" class="text-2xl font-bold">
             <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
         </a>
         <div class="hidden md:flex space-x-6 items-center">
-            <a href="{{ url_for('index') }}#home" class="hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="{{ url_for('main.index') }}#home" class="hover:text-cyan-400 transition duration-300">Home</a>
             <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a>
-            <a href="{{ url_for('index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-            <a href="{{ url_for('index') }}#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
-            <a href="#login" class="hover:text-cyan-400 transition duration-300">Login</a>
-            <a href="{{ url_for('signup_student_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+            <a href="{{ url_for('main.index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+            <a href="{{ url_for('main.index') }}#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
+            <a href="{{ url_for('main.login') }}" class="hover:text-cyan-400 transition duration-300">Login</a>
+            <a href="{{ url_for('student.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
         </div>
         <div class="md:hidden">
             <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
@@ -32,12 +32,12 @@
         </div>
     </div>
     <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
-        <a href="{{ url_for('index') }}#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
+        <a href="{{ url_for('main.index') }}#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
         <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
-        <a href="{{ url_for('index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-        <a href="{{ url_for('index') }}#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
-        <a href="#login" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
-        <a href="{{ url_for('signup_student_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
+        <a href="{{ url_for('main.index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+        <a href="{{ url_for('main.index') }}#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
+        <a href="{{ url_for('main.login') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
+        <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
     </div>
 </nav>
 
@@ -58,7 +58,7 @@
         {% endif %}
         {% endwith %}
 
-        <form id="signup-form" action="{{ url_for('signup_student_submit') }}" method="POST" class="space-y-6">
+        <form id="signup-form" action="{{ url_for('student.signup_submit') }}" method="POST" class="space-y-6">
 
             <fieldset class="fieldset-group">
                 <legend class="fieldset-legend">Personal Information</legend>
