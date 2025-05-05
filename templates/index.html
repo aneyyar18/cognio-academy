@@ -1,83 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TutorConnect - Your Learning Connection</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Apply Inter font globally */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* slate-900 as base dark background */
-        }
-        /* Custom gradient for hero or accents */
-        .gradient-accent {
-            background: linear-gradient(90deg, #22d3ee 0%, #67e8f9 100%); /* cyan-500 to cyan-300 */
-        }
-        /* Custom text gradient for logo */
-        .logo-gradient {
-            background: linear-gradient(90deg, #67e8f9 0%, #ffffff 100%); /* cyan-300 to white */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent; /* Standard property */
-        }
-        /* Custom button style */
-        .btn-primary {
-            @apply bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1;
-        }
-        .btn-secondary {
-            @apply bg-transparent border-2 border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out;
-        }
-        /* Simple connected dots background element (optional) */
-        .dots-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1; /* Behind content */
-            opacity: 0.1; /* Subtle */
-        }
-        /* Add more styling for dots if needed */
-    </style>
-</head>
-<body class="text-gray-200">
+{% extends "base.html" %}
 
-<nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" class="text-2xl font-bold">
-            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
-        </a>
-        <div class="hidden md:flex space-x-6 items-center">
-            <a href="#home" class="hover:text-cyan-400 transition duration-300">Home</a>
-            <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a>
-            <a href="#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-            <a href="#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
-            <a href="#login" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Login</a>
-            <a href="/student/signup" class="bg-transparent border border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
-        </div>
-        <div class="md:hidden">
-            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-    </div>
-    <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
-        <a href="#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
-        <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
-        <a href="#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-        <a href="#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
-        <a href="#login" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
-        <a href="/student/signup" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Sign Up</a>
-    </div>
-</nav>
+{% set active_page = 'home' %}
 
+{% block title %}TutorConnect - Your Learning Connection{% endblock %}
+
+{% block head %}
+<style>
+    /* Simple connected dots background element (optional) */
+    .dots-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1; /* Behind content */
+        opacity: 0.1; /* Subtle */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <header id="home" class="relative bg-slate-900 pt-24 pb-32 text-center overflow-hidden">
     <div class="container mx-auto px-6 relative z-10">
         <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">
@@ -88,7 +31,7 @@
         </p>
         <div class="space-x-4">
             <a href="#tutors" class="btn-primary">Find Your Tutor</a>
-            <a href="#become-tutor" class="btn-secondary">Become a Tutor</a>
+            <a href="{{ url_for('tutor.signup_form') }}" class="btn-secondary">Become a Tutor</a>
         </div>
     </div>
     <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-slate-900 to-transparent"></div>
@@ -175,39 +118,7 @@
     <div class="container mx-auto px-6 text-center">
         <h2 class="text-3xl font-bold mb-4">Ready to Share Your Knowledge?</h2>
         <p class="text-lg mb-8">Join our community of expert tutors and start making a difference today.</p>
-        <a href="/tutor/signup" class="bg-white text-cyan-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 transform hover:-translate-y-1">Become a Tutor</a>
+        <a href="{{ url_for('tutor.signup_form') }}" class="bg-white text-cyan-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 transform hover:-translate-y-1">Become a Tutor</a>
     </div>
 </section>
-
-<footer class="bg-slate-900 py-10 text-gray-400">
-    <div class="container mx-auto px-6 text-center md:flex md:justify-between md:items-center">
-        <div>
-            <p>&copy; 2025 TutorConnect. All rights reserved.</p>
-            <p class="text-sm">Designed to connect learners and educators.</p>
-        </div>
-        <div class="mt-4 md:mt-0 space-x-4">
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Privacy Policy</a>
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Terms of Service</a>
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Contact Us</a>
-        </div>
-    </div>
-</footer>
-
-<script>
-    const menuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    menuButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
-
-    // Close menu when a link is clicked (optional)
-    mobileMenu.addEventListener('click', (event) => {
-        if (event.target.tagName === 'A') {
-            mobileMenu.classList.add('hidden');
-        }
-    });
-</script>
-
-</body>
-</html>
+{% endblock %}

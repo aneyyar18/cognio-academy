@@ -1,46 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Signup - TutorConnect</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="flex flex-col min-h-screen">
+{% extends "base.html" %}
 
-<nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="{{ url_for('main.index') }}" class="text-2xl font-bold">
-            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
-        </a>
-        <div class="hidden md:flex space-x-6 items-center">
-            <a href="{{ url_for('main.index') }}#home" class="hover:text-cyan-400 transition duration-300">Home</a>
-            <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a>
-            <a href="{{ url_for('main.index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-            <a href="{{ url_for('main.index') }}#about" class="hover:text-cyan-400 transition duration-300">About Us</a>
-            <a href="{{ url_for('main.login') }}" class="hover:text-cyan-400 transition duration-300">Login</a>
-            <a href="{{ url_for('student.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
-        </div>
-        <div class="md:hidden">
-            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-    </div>
-    <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
-        <a href="{{ url_for('main.index') }}#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
-        <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
-        <a href="{{ url_for('main.index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-        <a href="{{ url_for('main.index') }}#about" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
-        <a href="{{ url_for('main.login') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
-        <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
-    </div>
-</nav>
+{% set active_page = 'student_signup' %}
 
+{% block title %}Student Signup - TutorConnect{% endblock %}
+
+{% block content %}
 <main class="flex-grow container mx-auto px-6 py-12 md:py-20 flex items-center justify-center">
     <div class="bg-slate-800 p-8 md:p-12 rounded-lg shadow-2xl w-full max-w-2xl">
         <h1 class="text-3xl font-bold text-center text-cyan-400 mb-8">Create Your Student Account</h1>
@@ -193,7 +157,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" id="submit-button" class="class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"">
+                    <button type="submit" id="submit-button" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
                         Create Account
                     </button>
                 </div>
@@ -202,45 +166,16 @@
 
         <p class="mt-8 text-center text-sm text-gray-400">
             Already have an account?
-            <a href="#login" class="font-medium text-cyan-400 hover:text-cyan-300 hover:underline">
+            <a href="{{ url_for('main.login') }}" class="font-medium text-cyan-400 hover:text-cyan-300 hover:underline">
                 Login here
             </a>
         </p>
     </div>
 </main>
+{% endblock %}
 
-<footer class="bg-slate-900 py-10 text-gray-400 mt-auto">
-    <div class="container mx-auto px-6 text-center md:flex md:justify-between md:items-center">
-        <div>
-            <p>&copy; 2025 TutorConnect. All rights reserved.</p>
-            <p class="text-sm">Designed to connect learners and educators.</p>
-        </div>
-        <div class="mt-4 md:mt-0 space-x-4">
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Privacy Policy</a>
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Terms of Service</a>
-            <a href="#" class="hover:text-cyan-400 transition duration-300">Contact Us</a>
-        </div>
-    </div>
-</footer>
-
+{% block scripts %}
 <script>
-    // Mobile Menu Toggle
-    const menuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    if (menuButton && mobileMenu) { // Check if elements exist
-        menuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        mobileMenu.addEventListener('click', (event) => {
-            if (event.target.tagName === 'A') {
-                mobileMenu.classList.add('hidden');
-            }
-        });
-    }
-
-
     // Basic Password Match Validation (Client-side)
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm-password');
@@ -307,9 +242,5 @@
             console.log('Client-side checks passed, submitting form...');
         });
     }
-
 </script>
-
-</body>
-</html>
-    
+{% endblock %}
