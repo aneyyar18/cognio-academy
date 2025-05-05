@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Tutor Dashboard | TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Welcome, {{ session.user_name }}!</h1>
+            
+            <div class="alert alert-info">
+                <h4>Getting Started</h4>
+                <p>Welcome to your TutorConnect tutor dashboard. Here you can:</p>
+                <ul>
+                    <li>Manage your tutoring schedule</li>
+                    <li>View and respond to student requests</li>
+                    <li>Update your profile and availability</li>
+                    <li>Track your earnings and sessions</li>
+                </ul>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Your Profile</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ session.user_email }}</p>
+                    <p><a href="{{ url_for('tutor.profile') }}" class="btn btn-outline-primary">View/Edit Profile</a></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Upcoming Sessions</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">You have no upcoming sessions scheduled.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">Student Requests</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">You have no pending student requests.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

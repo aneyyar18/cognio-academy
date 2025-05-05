@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Tutor Profile | TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Your Tutor Profile</h1>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Personal Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            {% if tutor.profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
+                                 alt="{{ tutor.fullname }}" class="img-fluid rounded-circle" style="max-width: 150px;">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="Default Profile" class="img-fluid rounded-circle" style="max-width: 150px;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> {{ tutor.fullname }}</p>
+                                    <p><strong>Email:</strong> {{ tutor.email }}</p>
+                                    <p><strong>Phone:</strong> {{ tutor.phone if tutor.phone else 'Not provided' }}</p>
+                                    <p><strong>Timezone:</strong> {{ tutor.timezone }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Account Created:</strong> {{ tutor.created_at.strftime('%B %d, %Y') }}</p>
+                                    <p><strong>Last Login:</strong> {{ tutor.last_login.strftime('%B %d, %Y at %H:%M') if tutor.last_login else 'Never' }}</p>
+                                    <p><strong>Hourly Rate:</strong> {% if tutor.hourly_rate %}${{ tutor.hourly_rate }}/hour{% else %}Not specified{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Tutor Qualification</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Highest Qualification:</strong> {{ tutor.qualification }}</p>
+                    <p><strong>Years of Experience:</strong> {{ tutor.experience }}</p>
+                    <p><strong>Subjects Taught:</strong></p>
+                    <ul>
+                        {% for subject in tutor.subjects_taught %}
+                        <li>{{ subject }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">About Me</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ tutor.bio }}</p>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('tutor.dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
+                <!-- Edit profile functionality would go here in future updates -->
+                <button class="btn btn-primary" disabled>Edit Profile (Coming Soon)</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

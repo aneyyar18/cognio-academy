@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard | TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Welcome, {{ session.user_name }}!</h1>
+            
+            <div class="alert alert-info">
+                <h4>Getting Started</h4>
+                <p>Welcome to your TutorConnect dashboard. Here you can:</p>
+                <ul>
+                    <li>Search for tutors in your subjects of interest</li>
+                    <li>Schedule sessions with tutors</li>
+                    <li>Manage your learning goals</li>
+                    <li>Track your progress</li>
+                </ul>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Your Profile</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ session.user_email }}</p>
+                    <p><a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary">View/Edit Profile</a></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Find Tutors</h3>
+                </div>
+                <div class="card-body">
+                    <p>Start exploring tutors who can help you with your learning goals.</p>
+                    <p><a href="{{ url_for('main.discover') }}" class="btn btn-success">Find Tutors</a></p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">Recent Activity</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">You have no recent activity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

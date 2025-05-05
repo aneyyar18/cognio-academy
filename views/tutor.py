@@ -3,8 +3,12 @@ Tutor views for the TutorConnect application.
 Contains routes for tutor registration, profile management, etc.
 """
 from flask import (Blueprint, render_template, request, url_for, redirect, 
-                  flash, current_app)
+                  flash, current_app, session)
+from sqlalchemy.exc import IntegrityError
 
+from db import db
+from models.tutor import Tutor
+from auth import login_user, login_required, role_required
 from utils.file_handling import allowed_file, save_uploaded_file
 
 # Create a Blueprint for tutor routes
@@ -59,7 +63,6 @@ def signup_submit():
             errors.append("Full Name is required.")
         if not email: 
             errors.append("Email is required.")
-        # TODO: Add email format validation / check if email exists
         if not password or len(password) < 8: 
             errors.append("Password is required (min 8 chars).")
         if password != confirm_password: 
@@ -94,30 +97,64 @@ def signup_submit():
         if errors:
             for error in errors: 
                 flash(error, 'error')
-            # TODO: Re-populate form with previous data for better UX
             return redirect(url_for('tutor.signup_form'))
 
-        # If validation passes
-        # TODO: Hash password: hashed_password = generate_password_hash(password)
-        # TODO: Store tutor data in DB, including profile_pic_filename if available
-        
-        # Log form data for development purposes
-        if current_app.debug:
-            print("--- Tutor Form Data Received ---")
-            print(f"Tutor Full Name: {fullname}")
-            print(f"Tutor Email: {email}")
-            print(f"Timezone: {timezone}")
-            print(f"Qualification: {qualification}")
-            print(f"Experience: {experience_str}")
-            print(f"Subjects: {subjects}")
-            print(f"Bio: {bio[:50]}...")  # Print start of bio
-            print(f"Hourly Rate: {hourly_rate_str}")
-            print(f"Profile Pic Filename: {profile_pic_filename}")
-            print(f"Terms Agreed: {terms}")
-            print("--- End Tutor Form Data ---")
-
-        flash('Tutor account created successfully! Your profile may be subject to review.', 'success')
-        return redirect(url_for('main.index'))  # Or tutor dashboard/login page
+        try:
+            # Create the tutor record
+            tutor = Tutor.create(
+                email=email,
+                fullname=fullname,
+                password=password,
+                timezone=timezone,
+                qualification=qualification,
+                experience=experience_str,
+                subjects_taught=subjects,
+                bio=bio,
+                phone=phone,
+                hourly_rate=hourly_rate_str if hourly_rate_str else None,
+                profile_pic=profile_pic_filename
+            )
+            
+            # Log success
+            current_app.logger.info(f"Tutor account created: {fullname}, {email}")
+            
+            # Flash success message and redirect to login
+            flash('Tutor account created successfully! Please log in.', 'success')
+            return redirect(url_for('main.login'))
+            
+        except IntegrityError:
+            db.session.rollback()
+            flash('An account with that email already exists.', 'error')
+            return redirect(url_for('tutor.signup_form'))
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Error creating tutor account: {str(e)}")
+            flash('An error occurred while creating your account. Please try again.', 'error')
+            return redirect(url_for('tutor.signup_form'))
         
     # If method is not POST
     return redirect(url_for('tutor.signup_form'))
+
+
+@tutor_bp.route('/dashboard')
+@login_required
+@role_required(['tutor'])
+def dashboard():
+    """Tutor dashboard page."""
+    return render_template('tutor/dashboard.html')
+
+
+@tutor_bp.route('/profile')
+@login_required
+@role_required(['tutor'])
+def profile():
+    """Tutor profile page."""
+    # Get the current tutor from the database
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/profile.html', tutor=tutor)

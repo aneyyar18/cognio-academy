@@ -2,8 +2,8 @@
 Application factory for TutorConnect.
 """
 import os
-from flask import Flask
-
+import datetime
+from flask import Flask, session
 
 def create_app(config_filename=None):
     """
@@ -29,15 +29,30 @@ def create_app(config_filename=None):
     # Set secret key from config
     app.secret_key = app.config.get('SECRET_KEY', 'default_key')
     
+    # Configure session to expire after a specified time
+    app.permanent_session_lifetime = datetime.timedelta(seconds=app.config.get('AUTH_TOKEN_EXPIRY', 86400))
+    
     # Ensure the upload folder exists
     os.makedirs(app.config.get('UPLOAD_FOLDER', 'static/uploads/profile_pics'),
                 exist_ok=True)
+    
+    # Initialize the database
+    init_database(app)
     
     # Register blueprints
     register_blueprints(app)
     
     return app
 
+def init_database(app):
+    """
+    Initialize the database for the application.
+    
+    Args:
+        app (Flask): The Flask application
+    """
+    from db import init_db
+    init_db(app)
 
 def register_blueprints(app):
     """
@@ -50,8 +65,10 @@ def register_blueprints(app):
     from views.main import main_bp
     from views.student import student_bp
     from views.tutor import tutor_bp
+    from views.auth import auth_bp
     
     # Register blueprints
     app.register_blueprint(main_bp)
     app.register_blueprint(student_bp, url_prefix='/student')
     app.register_blueprint(tutor_bp, url_prefix='/tutor')
+    app.register_blueprint(auth_bp, url_prefix='/auth')

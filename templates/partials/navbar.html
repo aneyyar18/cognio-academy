@@ -1,21 +1,42 @@
 <nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="{{ url_for('main.index') }}" class="text-2xl font-bold">
-            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
+        <a href="{{ url_for('main.index') }}" class="flex items-center">
+            <img src="{{ url_for('static', filename='images/tutor_connect_logo.png') }}" alt="TutorConnect" class="h-16">
         </a>
-        <div class="hidden md:flex space-x-6 items-center">
-            <a href="{{ url_for('main.index') }}#home" class="hover:text-cyan-400 transition duration-300">Home</a>
-            <a href="{{ url_for('main.index') }}#features" class="hover:text-cyan-400 transition duration-300">Features</a>
-            <a href="{{ url_for('main.index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+        <div class="hidden md:flex space-x-6 items-center text-white">
+            <a href="{{ url_for('main.index') }}" class="hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="{{ url_for('main.features') }}" class="hover:text-cyan-400 transition duration-300">Features</a>
+            <a href="{{ url_for('main.discover') }}" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
             <a href="{{ url_for('main.about') }}" class="hover:text-cyan-400 transition duration-300">About Us</a>
-            <a href="{{ url_for('main.login') }}" class="hover:text-cyan-400 transition duration-300">Login</a>
             
-            {% if active_page == 'tutor_signup' %}
-                <a href="{{ url_for('tutor.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Become a Tutor</a>
-            {% elif active_page == 'student_signup' %}
-                <a href="{{ url_for('student.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+            {% if session.get('user_id') %}
+                <div class="relative group">
+                    <button class="text-white hover:text-cyan-400 transition duration-300 flex items-center">
+                        Welcome, {{ session.get('user_name', 'User') }}
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg hidden group-hover:block z-50">
+                        {% if session.get('user_role') == 'student' %}
+                            <a href="{{ url_for('student.dashboard') }}" class="block px-4 py-2 hover:bg-slate-700 hover:text-cyan-400">Dashboard</a>
+                            <a href="{{ url_for('student.profile') }}" class="block px-4 py-2 hover:bg-slate-700 hover:text-cyan-400">My Profile</a>
+                        {% elif session.get('user_role') == 'tutor' %}
+                            <a href="{{ url_for('tutor.dashboard') }}" class="block px-4 py-2 hover:bg-slate-700 hover:text-cyan-400">Dashboard</a>
+                            <a href="{{ url_for('tutor.profile') }}" class="block px-4 py-2 hover:bg-slate-700 hover:text-cyan-400">My Profile</a>
+                        {% endif %}
+                        <hr class="border-slate-600">
+                        <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 hover:bg-slate-700 hover:text-cyan-400">Logout</a>
+                    </div>
+                </div>
             {% else %}
-                <a href="{{ url_for('student.signup_form') }}" class="bg-transparent border border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+                <a href="{{ url_for('main.login') }}" class="hover:text-cyan-400 transition duration-300">Login</a>
+                
+                {% if active_page == 'tutor_signup' %}
+                    <a href="{{ url_for('tutor.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Become a Tutor</a>
+                {% elif active_page == 'student_signup' %}
+                    <a href="{{ url_for('student.signup_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+                {% else %}
+                    <a href="{{ url_for('student.signup_form') }}" class="bg-transparent border border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-medium py-2 px-4 rounded-lg transition duration-300">Sign Up</a>
+                {% endif %}
             {% endif %}
         </div>
         <div class="md:hidden">
@@ -25,18 +46,30 @@
         </div>
     </div>
     <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
-        <a href="{{ url_for('main.index') }}#home" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
-        <a href="{{ url_for('main.index') }}#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
-        <a href="{{ url_for('main.index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
-        <a href="{{ url_for('main.about') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">About Us</a>
-        <a href="{{ url_for('main.login') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
+        <a href="{{ url_for('main.index') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Home</a>
+        <a href="{{ url_for('main.features') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Features</a>
+        <a href="{{ url_for('main.discover') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Find a Tutor</a>
+        <a href="{{ url_for('main.about') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">About Us</a>
         
-        {% if active_page == 'tutor_signup' %}
-            <a href="{{ url_for('tutor.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Become a Tutor</a>
-        {% elif active_page == 'student_signup' %} 
-            <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
+        {% if session.get('user_id') %}
+            {% if session.get('user_role') == 'student' %}
+                <a href="{{ url_for('student.dashboard') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Dashboard</a>
+                <a href="{{ url_for('student.profile') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">My Profile</a>
+            {% elif session.get('user_role') == 'tutor' %}
+                <a href="{{ url_for('tutor.dashboard') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Dashboard</a>
+                <a href="{{ url_for('tutor.profile') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">My Profile</a>
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}" class="block px-6 py-3 bg-red-600 text-white font-semibold">Logout</a>
         {% else %}
-            <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Sign Up</a>
+            <a href="{{ url_for('main.login') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300 text-white">Login</a>
+            
+            {% if active_page == 'tutor_signup' %}
+                <a href="{{ url_for('tutor.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Become a Tutor</a>
+            {% elif active_page == 'student_signup' %} 
+                <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
+            {% else %}
+                <a href="{{ url_for('student.signup_form') }}" class="block px-6 py-3 bg-cyan-600 text-white font-semibold">Sign Up</a>
+            {% endif %}
         {% endif %}
     </div>
 </nav>
