@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - TutorConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup_style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Additional styles specific to About page if needed */
+        .team-member img {
+            filter: grayscale(50%);
+            transition: filter 0.3s ease-in-out;
+        }
+        .team-member:hover img {
+            filter: grayscale(0%);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<nav class="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="{{ url_for('index') }}" class="text-2xl font-bold">
+            <span class="text-cyan-400">Tutor</span><span class="text-white">Connect</span>
+        </a>
+        <div class="hidden md:flex space-x-6 items-center">
+            <a href="{{ url_for('index') }}" class="hover:text-cyan-400 transition duration-300">Home</a>
+            <a href="#features" class="hover:text-cyan-400 transition duration-300">Features</a> <a href="{{ url_for('index') }}#tutors" class="hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+            <a href="{{ url_for('about_us') }}" class="text-cyan-400 font-semibold transition duration-300">About Us</a>
+            <a href="#login" class="hover:text-cyan-400 transition duration-300">Login</a>
+            <a href="{{ url_for('signup_student_form') }}" class="hover:text-cyan-400 transition duration-300">Student Signup</a>
+            <a href="{{ url_for('signup_tutor_form') }}" class="bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">Become a Tutor</a>
+        </div>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
+        <a href="{{ url_for('index') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Home</a>
+        <a href="#features" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Features</a>
+        <a href="{{ url_for('index') }}#tutors" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Find a Tutor</a>
+        <a href="{{ url_for('about_us') }}" class="block px-6 py-3 text-cyan-400 font-semibold bg-slate-700">About Us</a> <a href="#login" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Login</a>
+        <a href="{{ url_for('signup_student_form') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Student Signup</a>
+        <a href="{{ url_for('signup_tutor_form') }}" class="block px-6 py-3 hover:bg-slate-700 hover:text-cyan-400 transition duration-300">Become a Tutor</a>
+    </div>
+</nav>
+
+<header class="bg-slate-800 py-16 text-center">
+    <div class="container mx-auto px-6">
+        <h1 class="text-4xl md:text-5xl font-bold text-cyan-400 mb-4">About TutorConnect</h1>
+        <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
+            Connecting learners and educators to unlock potential, together.
+        </p>
+    </div>
+</header>
+
+<main class="flex-grow bg-slate-900 py-16 md:py-20">
+    <div class="container mx-auto px-6 space-y-16">
+
+        <section class="text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-cyan-400 mb-4">Our Mission</h2>
+            <p class="text-lg text-gray-300 leading-relaxed">
+                At TutorConnect, our mission is to make quality education accessible and personalized for everyone. We strive to bridge the gap between knowledgeable tutors and eager learners, fostering a supportive environment where students can thrive academically and build confidence in their abilities.
+            </p>
+        </section>
+
+        <section class="bg-slate-800 p-8 md:p-12 rounded-lg shadow-lg flex flex-col md:flex-row items-center gap-10">
+            <div class="md:w-1/2">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-4">Our Story</h2>
+                <p class="text-gray-300 mb-4 leading-relaxed">
+                    TutorConnect was born from a simple idea: finding the right tutor shouldn't be a challenge. Our founders, a group of educators and tech enthusiasts based right here in Hayward, California, experienced firsthand the difficulties students faced in connecting with qualified tutors who matched their specific learning style and needs.
+                </p>
+                <p class="text-gray-300 leading-relaxed">
+                    Driven by a passion for education and technology, we set out to build a platform that is intuitive, reliable, and effective. We envisioned a space where students could easily find and connect with vetted tutors, and where educators could share their expertise and make a meaningful impact. Launched in [Year - e.g., 2023], TutorConnect is committed to continuously improving and expanding our services to empower learning journeys worldwide.
+                </p>
+            </div>
+            <div class="md:w-1/2">
+                <img src="https://placehold.co/600x400/0f172a/67e8f9?text=Our+Journey" alt="TutorConnect Team Working" class="rounded-lg shadow-md w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Error'">
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold text-center text-cyan-400 mb-10">Our Core Values</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-slate-800 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-5xl text-cyan-400 mb-4"><i class="fas fa-lightbulb"></i></div> <h3 class="text-xl font-semibold mb-2">Empowerment</h3>
+                    <p class="text-gray-400">We believe in empowering both students and tutors to reach their full potential.</p>
+                </div>
+                <div class="bg-slate-800 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-5xl text-cyan-400 mb-4"><i class="fas fa-handshake-angle"></i></div> <h3 class="text-xl font-semibold mb-2">Connection</h3>
+                    <p class="text-gray-400">We foster meaningful connections that facilitate effective learning and mentorship.</p>
+                </div>
+                <div class="bg-slate-800 p-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                    <div class="text-5xl text-cyan-400 mb-4"><i class="fas fa-shield-halved"></i></div> <h3 class="text-xl font-semibold mb-2">Integrity</h3>
+                    <p class="text-gray-400">We operate with transparency, honesty, and a commitment to quality education.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center">
+            <h2 class="text-3xl font-bold text-cyan-400 mb-10">Meet the Team (Founders)</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div class="team-member bg-slate-800 rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Founder+1" alt="Team Member 1" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                    <h4 class="text-lg font-semibold mb-1">Alex Chen</h4>
+                    <p class="text-cyan-400 mb-2 text-sm">Co-Founder & CEO</p>
+                </div>
+                <div class="team-member bg-slate-800 rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Founder+2" alt="Team Member 2" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                    <h4 class="text-lg font-semibold mb-1">Maria Garcia</h4>
+                    <p class="text-cyan-400 mb-2 text-sm">Co-Founder & Head of Education</p>
+                </div>
+                <div class="team-member bg-slate-800 rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Founder+3" alt="Team Member 3" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                    <h4 class="text-lg font-semibold mb-1">Sam Patel</h4>
+                    <p class="text-cyan-400 mb-2 text-sm">Co-Founder & CTO</p>
+                </div>
+                <div class="team-member bg-slate-800 rounded-lg shadow-lg p-6 transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://placehold.co/150x150/0f172a/67e8f9?text=Founder+4" alt="Team Member 4" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400" onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Error'">
+                    <h4 class="text-lg font-semibold mb-1">Jessica Lee</h4>
+                    <p class="text-cyan-400 mb-2 text-sm">Head of Community</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-16 rounded-lg shadow-xl">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold mb-4">Join Our Community!</h2>
+                <p class="text-lg mb-8 max-w-2xl mx-auto">
+                    Whether you're looking for a tutor or want to share your knowledge, TutorConnect is here for you.
+                </p>
+                <div class="space-y-4 md:space-y-0 md:space-x-4">
+                    <a href="{{ url_for('signup_student_form') }}" class="inline-block bg-white text-cyan-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 transform hover:-translate-y-1">Find a Tutor</a>
+                    <a href="{{ url_for('signup_tutor_form') }}" class="inline-block bg-transparent border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white hover:text-cyan-600 transition duration-300 transform hover:-translate-y-1">Become a Tutor</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer class="bg-slate-900 py-10 text-gray-400 mt-auto"> <div class="container mx-auto px-6 text-center md:flex md:justify-between md:items-center">
+    <div>
+        <p>&copy; 2025 TutorConnect. All rights reserved.</p>
+        <p class="text-sm">Based in Hayward, California.</p>
+    </div>
+    <div class="mt-4 md:mt-0 space-x-4">
+        <a href="#" class="hover:text-cyan-400 transition duration-300">Privacy Policy</a>
+        <a href="#" class="hover:text-cyan-400 transition duration-300">Terms of Service</a>
+        <a href="#" class="hover:text-cyan-400 transition duration-300">Contact Us</a>
+    </div>
+</div>
+</footer>
+
+<script>
+    // Mobile Menu Toggle (Same as before)
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuButton && mobileMenu) {
+        menuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+        mobileMenu.addEventListener('click', (event) => { if (event.target.tagName === 'A') { mobileMenu.classList.add('hidden'); } });
+    }
+</script>
+
+</body>
+</html>
