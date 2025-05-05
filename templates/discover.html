@@ -5,127 +5,87 @@
 {% block title %}Discover Tutors - TutorConnect{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
+    .discover-header {
+        padding: 4rem 0;
+        text-align: center;
+        background-color: #1e293b; /* slate-800 */
+    }
+    
     .discover-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        color: #d3d3d3;
-        margin-top: 30px;
-        position: relative;
+        padding: 2rem 0;
+        background-color: #0f172a; /* slate-900 */
     }
 
     .search-bar {
         width: 100%;
-        padding: 15px;
-        font-size: 1.5em;
-        border-radius: 30px;
-        border: 1px solid #555;
-        outline: none;
-        margin-bottom: 20px;
-        background: linear-gradient(145deg, #2c3137, #23272b);
-        color: #d3d3d3;
-        box-shadow: inset 3px 3px 5px #1a1d20, inset -3px -3px 5px #2e3338,
-                    0 4px 15px rgba(0, 0, 0, 0.5);
+        padding: 0.75rem 1.5rem;
+        font-size: 1.125rem;
+        border-radius: 0.5rem;
+        border: 1px solid #475569; /* slate-600 */
+        background-color: #1e293b; /* slate-800 */
+        color: #e2e8f0; /* slate-200 */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        position: relative;
+        margin-bottom: 2rem;
     }
 
     .search-bar:focus {
-        border-color: #007bff;
-        box-shadow: inset 3px 3px 8px #1a1d20, inset -3px -3px 8px #2e3338,
-                    0 6px 20px rgba(0, 123, 255, 0.5);
-        background: linear-gradient(145deg, #2e3338, #23272b);
-    }
-
-    .tag-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-        padding: 10px;
-        background: linear-gradient(145deg, #3c3c3c, #2b2b2b);
-        border-radius: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
-
-    .tag-text {
-        background: linear-gradient(145deg, #4f4f4f, #2c2c2c);
-        color: #e0e0e0;
-        border-radius: 15px;
-        padding: 5px 15px;
-        font-size: 0.9em;
-        margin: 0 5px;
-        display: inline-block;
-        border: 1px solid #444;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .tag-text:hover {
-        background: linear-gradient(145deg, #6e6e6e, #4a4a4a);
-        color: #ffffff;
-    }
-
-    .tutor-results {
-        width: 100%;
-        max-width: 1000px;
-        margin-top: 30px;
+        outline: none;
+        border-color: #22d3ee; /* cyan-400 */
+        box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.3); /* cyan-400 with opacity */
     }
 
     .tutor-card {
-        background: linear-gradient(145deg, #23272b, #2c3137);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-        color: #d3d3d3;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        background-color: #1e293b; /* slate-800 */
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #e2e8f0; /* slate-200 */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        position: relative;
     }
 
     .tutor-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     }
 
     .tutor-card img {
         border-radius: 50%;
         width: 80px;
         height: 80px;
-        margin-right: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        margin-right: 1.5rem;
+        border: 3px solid #22d3ee; /* cyan-400 */
+        object-fit: cover;
         transition: transform 0.3s ease;
     }
 
     .tutor-card:hover img {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     .tutor-card h3 {
-        font-size: 1.5em;
-        margin-bottom: 0.3em;
-        color: #f1f1f1;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #f8fafc; /* slate-50 */
     }
 
     .tutor-card p {
-        font-size: 1.1em;
-        margin: 10px 0 0;
-        color: #b0b0b0;
+        font-size: 1rem;
+        margin: 0.75rem 0 0;
+        color: #cbd5e1; /* slate-300 */
     }
 
     .rating-container {
         display: flex;
         align-items: center;
-        margin-top: 10px;
-        gap: 15px;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
 
     .rating {
@@ -134,100 +94,177 @@
     }
 
     .rating span {
-        font-size: 1.2em;
-        margin-right: 5px;
-        color: #f1c40f;
+        font-size: 1rem;
+        margin-right: 0.375rem;
     }
 
     .rating .thumbs-up {
+        color: #f59e0b; /* amber-500 */
         cursor: pointer;
         transition: color 0.3s ease;
     }
 
     .rating .thumbs-up:hover {
-        color: #f39c12;
+        color: #f97316; /* orange-500 */
     }
 
     .tags {
         display: flex;
-        gap: 5px;
+        gap: 0.5rem;
         flex-wrap: wrap;
+    }
+
+    .tag-text {
+        background-color: rgba(34, 211, 238, 0.1); /* cyan-400 with opacity */
+        color: #22d3ee; /* cyan-400 */
+        border-radius: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        border: 1px solid rgba(34, 211, 238, 0.2); /* cyan-400 with opacity */
+        transition: all 0.3s ease;
+    }
+
+    .tag-text:hover {
+        background-color: rgba(34, 211, 238, 0.2); /* cyan-400 with more opacity */
+        color: #f8fafc; /* slate-50 */
+    }
+
+    .filter-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+        background-color: #1e293b; /* slate-800 */
+        color: #cbd5e1; /* slate-300 */
+        border: 1px solid #475569; /* slate-600 */
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+        background-color: #22d3ee; /* cyan-400 */
+        color: #0f172a; /* slate-900 */
+        border-color: #22d3ee; /* cyan-400 */
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="discover-content">
-    <input type="text" class="search-bar" placeholder="Search for tutors...">
-    <div class="tutor-results">
-        <!-- Tutor 1 -->
-        <div class="tutor-card">
-            <img src="https://cdn.discordapp.com/avatars/767789756217557013/7e394008f9d837a9ca0525888bcc12d6.webp?size=160" alt="John Doe">
-            <div>
-                <h3>John Doe</h3>
-                <div class="rating-container">
-                    <div class="rating">
-                        <span class="thumbs-up">👍</span>
-                        <span>45</span>
+<header class="discover-header">
+    <div class="container mx-auto px-6">
+        <h1 class="text-4xl font-bold text-cyan-400 mb-4">Discover Tutors</h1>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+            Find the perfect tutor to help you achieve your learning goals
+        </p>
+    </div>
+</header>
+
+<section class="discover-content">
+    <div class="container mx-auto px-6">
+        <div class="filter-section">
+            <button class="filter-btn active">All Subjects</button>
+            <button class="filter-btn">Mathematics</button>
+            <button class="filter-btn">Language Arts</button>
+            <button class="filter-btn">Programming</button>
+            <button class="filter-btn">Science</button>
+            <button class="filter-btn">History</button>
+        </div>
+        
+        <input type="text" class="search-bar" placeholder="Search for tutors by name, subject, or expertise...">
+        
+        <div class="tutor-results">
+            <!-- Tutor 1 -->
+            <div class="tutor-card">
+                <img src="https://cdn.discordapp.com/avatars/767789756217557013/7e394008f9d837a9ca0525888bcc12d6.webp?size=160" alt="John Doe">
+                <div>
+                    <h3>John Doe</h3>
+                    <div class="rating-container">
+                        <div class="rating">
+                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
+                            <span>45</span>
+                        </div>
+                        <div class="tags">
+                            <span class="tag-text">Algebra</span>
+                            <span class="tag-text">Calculus</span>
+                            <span class="tag-text">Geometry</span>
+                        </div>
                     </div>
-                    <div class="tags">
-                        <span class="tag-text">#Algebra</span>
-                        <span class="tag-text">#Calculus</span>
-                        <span class="tag-text">#Geometry</span>
-                    </div>
+                    <p>Experienced in teaching high school mathematics including algebra, calculus, and geometry.</p>
                 </div>
-                <p>Experienced in teaching high school mathematics including algebra, calculus, and geometry.</p>
+            </div>
+        
+            <!-- Tutor 2 -->
+            <div class="tutor-card">
+                <img src="https://cdn.discordapp.com/avatars/1064344164248064111/a_7425014849781721d420bdb92de59d52.webp?size=160" alt="Jane Smith">
+                <div>
+                    <h3>Jane Smith</h3>
+                    <div class="rating-container">
+                        <div class="rating">
+                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
+                            <span>32</span>
+                        </div>
+                        <div class="tags">
+                            <span class="tag-text">Reading</span>
+                            <span class="tag-text">Writing</span>
+                            <span class="tag-text">Literature</span>
+                        </div>
+                    </div>
+                    <p>Specialist in Language Arts with a focus on improving reading and writing skills.</p>
+                </div>
+            </div>
+        
+            <!-- Tutor 3 -->
+            <div class="tutor-card">
+                <img src="https://cdn.discordapp.com/avatars/1082514034366091284/5621ee3cb9587ff2366d8db1087ec087.webp?size=64" alt="Sam Lee">
+                <div>
+                    <h3>Sam Lee</h3>
+                    <div class="rating-container">
+                        <div class="rating">
+                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
+                            <span>27</span>
+                        </div>
+                        <div class="tags">
+                            <span class="tag-text">Python</span>
+                            <span class="tag-text">JavaScript</span>
+                            <span class="tag-text">Web Development</span>
+                        </div>
+                    </div>
+                    <p>Programming guru with expertise in Python, JavaScript, and web development.</p>
+                </div>
             </div>
         </div>
-    
-        <!-- Tutor 2 -->
-        <div class="tutor-card">
-            <img src="https://cdn.discordapp.com/avatars/1064344164248064111/a_7425014849781721d420bdb92de59d52.webp?size=160" alt="Jane Smith">
-            <div>
-                <h3>Jane Smith</h3>
-                <div class="rating-container">
-                    <div class="rating">
-                        <span class="thumbs-up">👍</span>
-                        <span>32</span>
-                    </div>
-                    <div class="tags">
-                        <span class="tag-text">#Reading</span>
-                        <span class="tag-text">#Writing</span>
-                        <span class="tag-text">#Literature</span>
-                    </div>
-                </div>
-                <p>Specialist in Language Arts with a focus on improving reading and writing skills.</p>
-            </div>
-        </div>
-    
-        <!-- Tutor 3 -->
-        <div class="tutor-card">
-            <img src="https://cdn.discordapp.com/avatars/1082514034366091284/5621ee3cb9587ff2366d8db1087ec087.webp?size=64" alt="Sam Lee">
-            <div>
-                <h3>Sam Lee</h3>
-                <div class="rating-container">
-                    <div class="rating">
-                        <span class="thumbs-up">👍</span>
-                        <span>27</span>
-                    </div>
-                    <div class="tags">
-                        <span class="tag-text">#Python</span>
-                        <span class="tag-text">#JavaScript</span>
-                        <span class="tag-text">#Web Development</span>
-                    </div>
-                </div>
-                <p>Programming guru with expertise in Python, JavaScript, and web development.</p>
-            </div>
+
+        <div class="text-center mt-8">
+            <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1">
+                Load More Tutors
+            </button>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Any JavaScript for the discover page can go here
     document.addEventListener('DOMContentLoaded', function() {
-        // Example: Add click event for thumbs-up
+        // Filter buttons functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // In a real app, this would filter the tutor list
+            });
+        });
+
+        // Thumbs up functionality
         const thumbsUpButtons = document.querySelectorAll('.thumbs-up');
         thumbsUpButtons.forEach(button => {
             button.addEventListener('click', function() {
