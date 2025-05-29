@@ -3,55 +3,193 @@
 {% block title %}Student Profile | TutorConnect{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="mb-4">Your Profile</h1>
-            
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Personal Information</h3>
+<div class="container mx-auto px-6 py-8">
+    <!-- Profile Header -->
+    <div class="mb-8">
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-3xl font-bold text-white">Your Profile</h1>
+                <div class="flex space-x-3">
+                    <a href="{{ url_for('student.dashboard') }}" class="btn-secondary text-sm px-4 py-2">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                    </a>
+                    <button class="btn-primary text-sm px-4 py-2" onclick="toggleEditMode()">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ student.fullname }}</p>
-                            <p><strong>Email:</strong> {{ student.email }}</p>
-                            <p><strong>Phone:</strong> {{ student.phone if student.phone else 'Not provided' }}</p>
-                            <p><strong>Date of Birth:</strong> {{ student.dob }}</p>
-                            <p><strong>Timezone:</strong> {{ student.timezone }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Picture & Basic Info -->
+        <div class="lg:col-span-1">
+            <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center">
+                <!-- Profile Picture Section -->
+                <div class="mb-6">
+                    <div class="relative inline-block">
+                        <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
+                            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="Profile Picture" 
+                                 class="w-full h-full object-cover">
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Account Created:</strong> {{ student.created_at.strftime('%B %d, %Y') }}</p>
-                            <p><strong>Last Login:</strong> {{ student.last_login.strftime('%B %d, %Y at %H:%M') if student.last_login else 'Never' }}</p>
+                        <button class="absolute bottom-0 right-0 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-camera text-sm"></i>
+                        </button>
+                    </div>
+                    <h2 class="text-xl font-bold text-white mb-2">{{ student.fullname }}</h2>
+                    <p class="text-cyan-400 font-medium">Student</p>
+                    <p class="text-gray-400 text-sm">{{ student.email }}</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="space-y-4">
+                    <div class="bg-slate-700 rounded-lg p-4">
+                        <div class="text-cyan-400 text-2xl font-bold">{{ student.created_at.strftime('%Y') }}</div>
+                        <div class="text-gray-400 text-sm">Member Since</div>
+                    </div>
+                    <div class="bg-slate-700 rounded-lg p-4">
+                        <div class="text-cyan-400 text-2xl font-bold">
+                            {% if student.subjects_interested %}{{ student.subjects_interested.split(',') | length }}{% else %}0{% endif %}
+                        </div>
+                        <div class="text-gray-400 text-sm">Subjects of Interest</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Personal Information -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h3 class="text-lg font-semibold text-white flex items-center">
+                        <i class="fas fa-user mr-3"></i>Personal Information
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-user text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Full Name</div>
+                                    <div class="text-white font-medium">{{ student.fullname }}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-envelope text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Email</div>
+                                    <div class="text-white font-medium">{{ student.email }}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-phone text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Phone</div>
+                                    <div class="text-white font-medium">{{ student.phone if student.phone else 'Not provided' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-birthday-cake text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Date of Birth</div>
+                                    <div class="text-white font-medium">{{ student.dob.strftime('%B %d, %Y') if student.dob else 'Not provided' }}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-globe text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Timezone</div>
+                                    <div class="text-white font-medium">{{ student.timezone }}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-slate-700 rounded-lg">
+                                <i class="fas fa-calendar text-cyan-400 mr-3 w-5"></i>
+                                <div>
+                                    <div class="text-sm text-gray-400">Last Login</div>
+                                    <div class="text-white font-medium">
+                                        {{ student.last_login.strftime('%B %d, %Y') if student.last_login else 'Never' }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Academic Information</h3>
+
+            <!-- Academic Information -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h3 class="text-lg font-semibold text-white flex items-center">
+                        <i class="fas fa-graduation-cap mr-3"></i>Academic Information
+                    </h3>
                 </div>
-                <div class="card-body">
-                    <p><strong>Study Level:</strong> {{ student.study_level }}</p>
-                    <p><strong>Subjects Interested In:</strong></p>
-                    <ul>
-                        {% for subject in student.subjects_interested %}
-                        <li>{{ subject }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p><strong>Learning Goals:</strong></p>
-                    <p>{{ student.learning_goals }}</p>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Study Level -->
+                        <div class="bg-slate-700 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-level-up-alt text-cyan-400 mr-3"></i>
+                                <h4 class="text-white font-semibold">Study Level</h4>
+                            </div>
+                            <div class="text-gray-300">{{ student.study_level if student.study_level else 'Not specified' }}</div>
+                        </div>
+
+                        <!-- Subject Count -->
+                        <div class="bg-slate-700 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-book text-cyan-400 mr-3"></i>
+                                <h4 class="text-white font-semibold">Subjects of Interest</h4>
+                            </div>
+                            <div class="text-2xl font-bold text-cyan-400">
+                                {% if student.subjects_interested %}{{ student.subjects_interested.split(',') | length }}{% else %}0{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subjects List -->
+                    <div class="mt-6">
+                        <h4 class="text-white font-semibold mb-4 flex items-center">
+                            <i class="fas fa-list text-cyan-400 mr-3"></i>Subjects
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            {% if student.subjects_interested %}
+                                {% for subject in student.subjects_interested.split(',') %}
+                                    <span class="bg-cyan-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                        {{ subject.strip() }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-gray-400 italic">No subjects specified</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Learning Goals -->
+                    <div class="mt-6">
+                        <h4 class="text-white font-semibold mb-4 flex items-center">
+                            <i class="fas fa-target text-cyan-400 mr-3"></i>Learning Goals
+                        </h4>
+                        <div class="bg-slate-700 rounded-lg p-4">
+                            <p class="text-gray-300 leading-relaxed">
+                                {{ student.learning_goals if student.learning_goals else 'No learning goals specified yet.' }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="d-flex justify-content-between">
-                <a href="{{ url_for('student.dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
-                <!-- Edit profile functionality would go here in future updates -->
-                <button class="btn btn-primary" disabled>Edit Profile (Coming Soon)</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function toggleEditMode() {
+    // This is a placeholder for future edit functionality
+    alert('Edit functionality coming soon!');
+}
+</script>
 {% endblock %}
