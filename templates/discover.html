@@ -167,77 +167,89 @@
 
 <section class="discover-content">
     <div class="container mx-auto px-6">
-        <div class="filter-section">
-            <button class="filter-btn active">All Subjects</button>
-            <button class="filter-btn">Mathematics</button>
-            <button class="filter-btn">Language Arts</button>
-            <button class="filter-btn">Programming</button>
-            <button class="filter-btn">Science</button>
-            <button class="filter-btn">History</button>
-        </div>
-        
-        <input type="text" class="search-bar" placeholder="Search for tutors by name, subject, or expertise...">
+        <!-- Search and Filter Form -->
+        <form method="GET" action="{{ url_for('main.discover') }}" class="mb-6">
+            <div class="filter-section">
+                <button type="submit" name="subject" value="All Subjects" 
+                        class="filter-btn {{ 'active' if not current_subject or current_subject == 'All Subjects' else '' }}">
+                    All Subjects
+                </button>
+                {% for subject in subjects %}
+                <button type="submit" name="subject" value="{{ subject }}" 
+                        class="filter-btn {{ 'active' if current_subject == subject else '' }}">
+                    {{ subject }}
+                </button>
+                {% endfor %}
+            </div>
+            
+            <div class="flex gap-4">
+                <input type="text" name="search" class="search-bar flex-1" 
+                       placeholder="Search for tutors by name, subject, or expertise..." 
+                       value="{{ current_search or '' }}">
+                <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 ease-in-out">
+                    <i class="fas fa-search mr-2"></i>Search
+                </button>
+            </div>
+        </form>
         
         <div class="tutor-results">
-            <!-- Tutor 1 -->
-            <div class="tutor-card">
-                <img src="https://cdn.discordapp.com/avatars/767789756217557013/7e394008f9d837a9ca0525888bcc12d6.webp?size=160" alt="John Doe">
-                <div>
-                    <h3>John Doe</h3>
-                    <div class="rating-container">
-                        <div class="rating">
-                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
-                            <span>45</span>
+            {% if tutors %}
+                {% for tutor in tutors %}
+                <div class="tutor-card" onclick="window.location.href='{{ url_for('main.tutor_detail', tutor_id=tutor.id) }}'">
+                    {% if tutor.profile_pic %}
+                        <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" alt="{{ tutor.fullname }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="{{ tutor.fullname }}">
+                    {% endif %}
+                    <div class="flex-1">
+                        <h3>{{ tutor.fullname }}</h3>
+                        <div class="rating-container">
+                            <div class="rating">
+                                <span class="text-cyan-400"><i class="fas fa-graduation-cap"></i></span>
+                                <span>{{ tutor.qualification }}</span>
+                            </div>
+                            <div class="rating">
+                                <span class="text-cyan-400"><i class="fas fa-clock"></i></span>
+                                <span>{{ tutor.experience }} years experience</span>
+                            </div>
+                            {% if tutor.hourly_rate %}
+                            <div class="rating">
+                                <span class="text-cyan-400"><i class="fas fa-dollar-sign"></i></span>
+                                <span>${{ tutor.hourly_rate }}/hour</span>
+                            </div>
+                            {% endif %}
                         </div>
-                        <div class="tags">
-                            <span class="tag-text">Algebra</span>
-                            <span class="tag-text">Calculus</span>
-                            <span class="tag-text">Geometry</span>
+                        <div class="tags mt-2">
+                            {% if tutor.subjects_taught %}
+                                {% for subject in tutor.subjects_taught.split(',')[:3] %}
+                                    <span class="tag-text">{{ subject.strip() }}</span>
+                                {% endfor %}
+                                {% if tutor.subjects_taught.split(',') | length > 3 %}
+                                    <span class="tag-text">+{{ tutor.subjects_taught.split(',') | length - 3 }} more</span>
+                                {% endif %}
+                            {% endif %}
                         </div>
+                        <p class="mt-2">{{ tutor.bio[:100] }}{% if tutor.bio|length > 100 %}...{% endif %}</p>
                     </div>
-                    <p>Experienced in teaching high school mathematics including algebra, calculus, and geometry.</p>
-                </div>
-            </div>
-        
-            <!-- Tutor 2 -->
-            <div class="tutor-card">
-                <img src="https://cdn.discordapp.com/avatars/1064344164248064111/a_7425014849781721d420bdb92de59d52.webp?size=160" alt="Jane Smith">
-                <div>
-                    <h3>Jane Smith</h3>
-                    <div class="rating-container">
-                        <div class="rating">
-                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
-                            <span>32</span>
-                        </div>
-                        <div class="tags">
-                            <span class="tag-text">Reading</span>
-                            <span class="tag-text">Writing</span>
-                            <span class="tag-text">Literature</span>
-                        </div>
+                    <div class="ml-4">
+                        <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                            View Profile
+                        </button>
                     </div>
-                    <p>Specialist in Language Arts with a focus on improving reading and writing skills.</p>
                 </div>
-            </div>
-        
-            <!-- Tutor 3 -->
-            <div class="tutor-card">
-                <img src="https://cdn.discordapp.com/avatars/1082514034366091284/5621ee3cb9587ff2366d8db1087ec087.webp?size=64" alt="Sam Lee">
-                <div>
-                    <h3>Sam Lee</h3>
-                    <div class="rating-container">
-                        <div class="rating">
-                            <span class="thumbs-up"><i class="fas fa-thumbs-up"></i></span>
-                            <span>27</span>
-                        </div>
-                        <div class="tags">
-                            <span class="tag-text">Python</span>
-                            <span class="tag-text">JavaScript</span>
-                            <span class="tag-text">Web Development</span>
-                        </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-8">
+                    <div class="text-6xl text-gray-600 mb-4">
+                        <i class="fas fa-search"></i>
                     </div>
-                    <p>Programming guru with expertise in Python, JavaScript, and web development.</p>
+                    <h3 class="text-xl font-semibold text-gray-300 mb-2">No tutors found</h3>
+                    <p class="text-gray-400">Try adjusting your search criteria or browse all tutors.</p>
+                    <a href="{{ url_for('main.discover') }}" class="inline-block mt-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                        View All Tutors
+                    </a>
                 </div>
-            </div>
+            {% endif %}
         </div>
 
         <div class="text-center mt-8">

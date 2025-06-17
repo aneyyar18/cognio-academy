@@ -113,14 +113,47 @@
         
         <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden">
             <div class="bg-cyan-600 text-white p-4">
-                <h5 class="font-semibold flex items-center"><i class="fas fa-inbox mr-2"></i>Student Requests</h5>
+                <h5 class="font-semibold flex items-center">
+                    <i class="fas fa-inbox mr-2"></i>Messages
+                    {% if unread_count > 0 %}
+                        <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full ml-2">{{ unread_count }}</span>
+                    {% endif %}
+                </h5>
             </div>
             <div class="p-6">
-                <div class="text-center py-6">
-                    <i class="fas fa-envelope text-cyan-400 mb-4" style="font-size: 2rem; opacity: 0.7;"></i>
-                    <p class="text-gray-400 mb-2">No pending requests</p>
-                    <small class="text-gray-500">New student requests will appear here</small>
-                </div>
+                {% if recent_messages %}
+                    <div class="space-y-3">
+                        {% for message in recent_messages %}
+                            <div class="flex items-center justify-between p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors duration-300">
+                                <div class="flex items-center">
+                                    {% if not message.is_read %}
+                                        <div class="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
+                                    {% else %}
+                                        <div class="w-2 h-2 mr-3"></div>
+                                    {% endif %}
+                                    <div>
+                                        <p class="text-white font-medium text-sm">{{ message.sender.fullname }}</p>
+                                        <p class="text-gray-400 text-xs">{{ message.subject[:30] }}{% if message.subject|length > 30 %}...{% endif %}</p>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500 text-xs">
+                                    {{ message.created_at.strftime('%m/%d') }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{{ url_for('tutor.messages') }}" class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">
+                            View All Messages
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-6">
+                        <i class="fas fa-envelope text-cyan-400 mb-4" style="font-size: 2rem; opacity: 0.7;"></i>
+                        <p class="text-gray-400 mb-2">No messages yet</p>
+                        <small class="text-gray-500">Student messages will appear here</small>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

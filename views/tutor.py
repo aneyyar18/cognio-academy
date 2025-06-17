@@ -141,7 +141,21 @@ def signup_submit():
 @role_required(['tutor'])
 def dashboard():
     """Tutor dashboard page."""
-    return render_template('tutor/dashboard.html')
+    from models.message import Message
+    
+    # Get recent messages for this tutor
+    tutor_id = session.get('user_id')
+    recent_messages = Message.query.filter_by(receiver_id=tutor_id)\
+                                  .order_by(Message.created_at.desc())\
+                                  .limit(5)\
+                                  .all()
+    
+    # Count unread messages
+    unread_count = Message.query.filter_by(receiver_id=tutor_id, is_read=False).count()
+    
+    return render_template('tutor/dashboard.html', 
+                         recent_messages=recent_messages, 
+                         unread_count=unread_count)
 
 
 @tutor_bp.route('/profile')
@@ -158,3 +172,44 @@ def profile():
         return redirect(url_for('main.index'))
         
     return render_template('tutor/profile.html', tutor=tutor)
+
+
+@tutor_bp.route('/messages')
+@login_required
+@role_required(['tutor'])
+def messages():
+    """View all messages received by the tutor."""
+    from models.message import Message
+    
+    tutor_id = session.get('user_id')
+    
+    # Get all messages for this tutor, ordered by creation date (newest first)
+    all_messages = Message.query.filter_by(receiver_id=tutor_id)\
+                                .order_by(Message.created_at.desc())\
+                                .all()
+    
+    # Count unread messages
+    unread_count = Message.query.filter_by(receiver_id=tutor_id, is_read=False).count()
+    
+    return render_template('tutor/messages.html', 
+                         messages=all_messages, 
+                         unread_count=unread_count)
+
+
+@tutor_bp.route('/message/<int:message_id>')
+@login_required
+@role_required(['tutor'])
+def view_message(message_id):
+    """View a specific message and mark it as read."""
+    from models.message import Message
+    
+    tutor_id = session.get('user_id')
+    
+    # Get the message and verify it belongs to this tutor
+    message = Message.query.filter_by(id=message_id, receiver_id=tutor_id).first_or_404()
+    
+    # Mark as read if not already read
+    if not message.is_read:
+        message.mark_as_read()
+    
+    return render_template('tutor/message_detail.html', message=message)

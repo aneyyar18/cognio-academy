@@ -69,25 +69,75 @@
 
             <fieldset class="fieldset-group">
                 <legend class="fieldset-legend">Account Credentials</legend>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div class="space-y-6 mt-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email Address <span class="text-red-500">*</span></label>
                         <input type="email" id="email" name="email" required
                                class="form-input bg-slate-700 border-slate-600 text-white rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                                placeholder="you@example.com">
                     </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password <span class="text-red-500">*</span></label>
-                        <input type="password" id="password" name="password" required minlength="8"
-                               class="form-input bg-slate-700 border-slate-600 text-white rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                               placeholder="Min. 8 characters">
+                    
+                    <!-- Password Requirements -->
+                    <div class="bg-slate-700 rounded-lg p-4">
+                        <div class="flex items-center text-cyan-400 mb-3">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            <span class="font-medium">Password Requirements</span>
+                        </div>
+                        <ul class="text-gray-300 text-sm space-y-1">
+                            <li id="req-length" class="flex items-center">
+                                <i class="fas fa-times text-red-400 mr-2 w-4"></i>
+                                At least 8 characters long
+                            </li>
+                            <li id="req-uppercase" class="flex items-center">
+                                <i class="fas fa-times text-red-400 mr-2 w-4"></i>
+                                At least one uppercase letter
+                            </li>
+                            <li id="req-lowercase" class="flex items-center">
+                                <i class="fas fa-times text-red-400 mr-2 w-4"></i>
+                                At least one lowercase letter
+                            </li>
+                            <li id="req-number" class="flex items-center">
+                                <i class="fas fa-times text-red-400 mr-2 w-4"></i>
+                                At least one number
+                            </li>
+                            <li id="req-special" class="flex items-center">
+                                <i class="fas fa-times text-red-400 mr-2 w-4"></i>
+                                At least one special character
+                            </li>
+                        </ul>
                     </div>
-                    <div>
-                        <label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password <span class="text-red-500">*</span></label>
-                        <input type="password" id="confirm-password" name="confirm-password" required
-                               class="form-input bg-slate-700 border-slate-600 text-white rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                               placeholder="Re-enter password">
-                        <p id="password-match-error" class="text-red-500 text-xs mt-1 hidden">Passwords do not match.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" required
+                                       class="form-input bg-slate-700 border-slate-600 text-white rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent pr-12"
+                                       placeholder="Enter your password"
+                                       autocomplete="new-password">
+                                <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <i class="fas fa-eye text-gray-400 hover:text-cyan-400 transition-colors duration-300"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input type="password" id="confirm-password" name="confirm-password" required
+                                       class="form-input bg-slate-700 border-slate-600 text-white rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent pr-12"
+                                       placeholder="Re-enter password"
+                                       autocomplete="new-password">
+                                <button type="button" id="toggle-confirm-password" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <i class="fas fa-eye text-gray-400 hover:text-cyan-400 transition-colors duration-300"></i>
+                                </button>
+                            </div>
+                            <div id="password-match" class="mt-2 hidden">
+                                <span class="text-sm flex items-center">
+                                    <i class="fas fa-times text-red-400 mr-2"></i>
+                                    Passwords do not match
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -171,7 +221,9 @@
                 </div>
 
                 <div>
-                    <button type="submit" id="submit-button" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="submit" id="submit-button" disabled
+                            class="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 cursor-not-allowed">
+                        <i class="fas fa-user-plus mr-2"></i>
                         Create Account
                     </button>
                 </div>
@@ -190,71 +242,195 @@
 
 {% block scripts %}
 <script>
-    // Basic Password Match Validation (Client-side)
+document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm-password');
-    const passwordMatchError = document.getElementById('password-match-error');
+    const submitBtn = document.getElementById('submit-button');
+    const passwordMatch = document.getElementById('password-match');
     const signupForm = document.getElementById('signup-form');
-    const submitButton = document.getElementById('submit-button');
-
-    function validatePasswordMatch() {
-        // Ensure elements exist before accessing properties
-        if (!passwordInput || !confirmPasswordInput || !passwordMatchError || !submitButton) {
-            console.warn("Signup form validation elements not found.");
-            return;
-        }
-
-        if (passwordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
-            passwordMatchError.classList.remove('hidden');
-            confirmPasswordInput.classList.add('!border-red-500');
-            confirmPasswordInput.classList.remove('focus:ring-cyan-500');
-            submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-        } else {
-            passwordMatchError.classList.add('hidden');
-            confirmPasswordInput.classList.remove('!border-red-500');
-            confirmPasswordInput.classList.add('focus:ring-cyan-500');
-            // Check overall form validity for enabling button
-            submitButton.disabled = !signupForm.checkValidity();
-            if (!submitButton.disabled) {
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    
+    // Password requirements elements
+    const requirements = {
+        length: document.getElementById('req-length'),
+        uppercase: document.getElementById('req-uppercase'),
+        lowercase: document.getElementById('req-lowercase'),
+        number: document.getElementById('req-number'),
+        special: document.getElementById('req-special')
+    };
+    
+    // Toggle password visibility
+    function setupPasswordToggle(inputId, buttonId) {
+        const input = document.getElementById(inputId);
+        const button = document.getElementById(buttonId);
+        if (!input || !button) return;
+        
+        const icon = button.querySelector('i');
+        
+        button.addEventListener('click', function() {
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
-        }
-    }
-
-    if (passwordInput && confirmPasswordInput) {
-        passwordInput.addEventListener('input', validatePasswordMatch);
-        confirmPasswordInput.addEventListener('input', validatePasswordMatch);
-    }
-
-    // Ensure submit button state is correct on initial load/changes
-    if (signupForm) {
-        signupForm.addEventListener('input', () => {
-            validatePasswordMatch(); // Re-validate password match on any form input
         });
     }
-
-    // Client-side check before submitting (supplements server-side validation)
+    
+    setupPasswordToggle('password', 'toggle-password');
+    setupPasswordToggle('confirm-password', 'toggle-confirm-password');
+    
+    // Validate password requirements
+    function validatePassword(password) {
+        const checks = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
+        
+        // Update UI for each requirement
+        Object.keys(checks).forEach(key => {
+            const element = requirements[key];
+            if (!element) return;
+            
+            const icon = element.querySelector('i');
+            
+            if (checks[key]) {
+                icon.classList.remove('fa-times', 'text-red-400');
+                icon.classList.add('fa-check', 'text-green-400');
+                element.classList.add('text-green-400');
+                element.classList.remove('text-gray-300');
+            } else {
+                icon.classList.remove('fa-check', 'text-green-400');
+                icon.classList.add('fa-times', 'text-red-400');
+                element.classList.remove('text-green-400');
+                element.classList.add('text-gray-300');
+            }
+        });
+        
+        return Object.values(checks).every(check => check);
+    }
+    
+    // Check if passwords match
+    function checkPasswordMatch() {
+        if (!passwordInput || !confirmPasswordInput || !passwordMatch) return true;
+        
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (confirmPassword && password !== confirmPassword) {
+            passwordMatch.classList.remove('hidden');
+            passwordMatch.querySelector('i').classList.remove('fa-check', 'text-green-400');
+            passwordMatch.querySelector('i').classList.add('fa-times', 'text-red-400');
+            passwordMatch.querySelector('span').textContent = 'Passwords do not match';
+            passwordMatch.querySelector('span').classList.remove('text-green-400');
+            passwordMatch.querySelector('span').classList.add('text-red-400');
+            return false;
+        } else if (confirmPassword && password === confirmPassword) {
+            passwordMatch.classList.remove('hidden');
+            passwordMatch.querySelector('i').classList.remove('fa-times', 'text-red-400');
+            passwordMatch.querySelector('i').classList.add('fa-check', 'text-green-400');
+            passwordMatch.querySelector('span').textContent = 'Passwords match';
+            passwordMatch.querySelector('span').classList.remove('text-red-400');
+            passwordMatch.querySelector('span').classList.add('text-green-400');
+            return true;
+        } else {
+            passwordMatch.classList.add('hidden');
+            return confirmPassword === '';
+        }
+    }
+    
+    // Check if form is complete
+    function isFormComplete() {
+        if (!signupForm) return false;
+        
+        // Check required fields
+        const requiredFields = signupForm.querySelectorAll('[required]');
+        for (let field of requiredFields) {
+            if (!field.value.trim()) {
+                return false;
+            }
+        }
+        
+        // Check terms checkbox
+        const termsCheckbox = document.getElementById('terms');
+        if (termsCheckbox && !termsCheckbox.checked) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Update submit button state
+    function updateSubmitButton() {
+        if (!passwordInput || !submitBtn) return;
+        
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+        const isValidPassword = validatePassword(password);
+        const passwordsMatch = checkPasswordMatch();
+        const formComplete = isFormComplete();
+        
+        if (isValidPassword && passwordsMatch && password && confirmPassword && formComplete) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('from-gray-500', 'to-gray-600', 'cursor-not-allowed');
+            submitBtn.classList.add('bg-cyan-500', 'hover:bg-cyan-600', 'transform', 'hover:-translate-y-1');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('from-gray-500', 'to-gray-600', 'cursor-not-allowed');
+            submitBtn.classList.remove('bg-cyan-500', 'hover:bg-cyan-600', 'transform', 'hover:-translate-y-1');
+        }
+    }
+    
+    // Event listeners
+    if (passwordInput) {
+        passwordInput.addEventListener('input', updateSubmitButton);
+    }
+    if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('input', updateSubmitButton);
+    }
     if (signupForm) {
-        signupForm.addEventListener('submit', (event) => {
-            // Basic check again, though server-side is the authority
-            if (passwordInput && confirmPasswordInput && passwordInput.value !== confirmPasswordInput.value) {
-                event.preventDefault(); // Stop submission
-                alert('Passwords do not match!');
-                confirmPasswordInput.focus();
+        signupForm.addEventListener('input', updateSubmitButton);
+        signupForm.addEventListener('change', updateSubmitButton);
+    }
+    
+    // Form submission
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            const password = passwordInput ? passwordInput.value : '';
+            const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+            
+            if (!validatePassword(password)) {
+                e.preventDefault();
+                alert('Please ensure your password meets all requirements.');
                 return;
             }
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match.');
+                return;
+            }
+            
             const termsCheckbox = document.getElementById('terms');
             if (termsCheckbox && !termsCheckbox.checked) {
-                event.preventDefault(); // Stop submission
+                e.preventDefault();
                 alert('Please agree to the Terms of Service and Privacy Policy.');
                 return;
             }
-            // If checks pass, let the form submit to the Flask endpoint
-            console.log('Client-side checks passed, submitting form...');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
         });
     }
+    
+    // Initial validation
+    updateSubmitButton();
+});
 </script>
 {% endblock %}

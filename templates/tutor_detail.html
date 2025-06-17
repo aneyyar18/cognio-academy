@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tutor.fullname }} - Tutor Profile | TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Back Navigation -->
+    <div class="mb-6">
+        <a href="{{ url_for('main.discover') }}" class="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors duration-300">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Discover Tutors
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Summary Card -->
+        <div class="lg:col-span-1">
+            <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center sticky top-8">
+                <!-- Profile Picture -->
+                <div class="mb-6">
+                    <div class="w-40 h-40 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
+                        {% if tutor.profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
+                                 alt="{{ tutor.fullname }}" 
+                                 class="w-full h-full object-cover">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="Default Profile" 
+                                 class="w-full h-full object-cover">
+                        {% endif %}
+                    </div>
+                    <h1 class="text-2xl font-bold text-white mb-2">{{ tutor.fullname }}</h1>
+                    <p class="text-cyan-400 font-medium mb-2">Professional Tutor</p>
+                    {% if tutor.hourly_rate %}
+                        <div class="bg-cyan-600 text-white px-4 py-2 rounded-full text-lg font-bold inline-block">
+                            ${{ tutor.hourly_rate }}/hour
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="space-y-4 mb-6">
+                    <div class="bg-slate-700 rounded-lg p-4">
+                        <div class="text-cyan-400 text-3xl font-bold">{{ tutor.experience }}+</div>
+                        <div class="text-gray-400 text-sm">Years Experience</div>
+                    </div>
+                    <div class="bg-slate-700 rounded-lg p-4">
+                        <div class="text-cyan-400 text-3xl font-bold">
+                            {% if tutor.subjects_taught %}{{ tutor.subjects_taught.split(',') | length }}{% else %}0{% endif %}
+                        </div>
+                        <div class="text-gray-400 text-sm">Subjects Taught</div>
+                    </div>
+                </div>
+
+                <!-- Contact Button -->
+                {% if session.user_id and session.user_role == 'student' %}
+                <button onclick="openMessageModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-envelope mr-2"></i>Send Message
+                </button>
+                {% elif not session.user_id %}
+                <a href="{{ url_for('main.login') }}" class="block w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 text-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Contact
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- About Section -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-user mr-3"></i>About {{ tutor.fullname.split()[0] }}
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-300 leading-relaxed text-lg">
+                        {{ tutor.bio }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Qualifications -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-graduation-cap mr-3"></i>Qualifications & Experience
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-700 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-medal text-cyan-400 mr-3 text-xl"></i>
+                                <h3 class="text-white font-semibold">Education</h3>
+                            </div>
+                            <p class="text-gray-300">{{ tutor.qualification }}</p>
+                        </div>
+                        <div class="bg-slate-700 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-clock text-cyan-400 mr-3 text-xl"></i>
+                                <h3 class="text-white font-semibold">Experience</h3>
+                            </div>
+                            <p class="text-gray-300">{{ tutor.experience }} years of teaching</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subjects Taught -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-chalkboard-teacher mr-3"></i>Subjects I Teach
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="flex flex-wrap gap-3">
+                        {% if tutor.subjects_taught %}
+                            {% for subject in tutor.subjects_taught.split(',') %}
+                                <span class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg transform hover:scale-105 transition-transform duration-300">
+                                    {{ subject.strip() }}
+                                </span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-400 italic">No subjects listed</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <i class="fas fa-info-circle mr-3"></i>Additional Information
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center p-3 bg-slate-700 rounded-lg">
+                            <i class="fas fa-globe text-cyan-400 mr-3"></i>
+                            <div>
+                                <div class="text-sm text-gray-400">Timezone</div>
+                                <div class="text-white">{{ tutor.timezone }}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-slate-700 rounded-lg">
+                            <i class="fas fa-calendar text-cyan-400 mr-3"></i>
+                            <div>
+                                <div class="text-sm text-gray-400">Member Since</div>
+                                <div class="text-white">{{ tutor.created_at.strftime('%B %Y') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Message Modal -->
+{% if session.user_id and session.user_role == 'student' %}
+<div id="messageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-slate-800 rounded-xl p-6 w-full max-w-md mx-4 border border-slate-700">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-white">Send Message to {{ tutor.fullname }}</h3>
+            <button onclick="closeMessageModal()" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('main.send_message') }}" method="POST">
+            <input type="hidden" name="tutor_id" value="{{ tutor.id }}">
+            <div class="mb-4">
+                <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">Subject</label>
+                <input type="text" id="subject" name="subject" required
+                       class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                       placeholder="Enter message subject">
+            </div>
+            <div class="mb-4">
+                <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                <textarea id="message" name="message" rows="4" required
+                          class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                          placeholder="Type your message here..."></textarea>
+            </div>
+            <div class="flex space-x-3">
+                <button type="button" onclick="closeMessageModal()" 
+                        class="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function openMessageModal() {
+    document.getElementById('messageModal').classList.remove('hidden');
+}
+
+function closeMessageModal() {
+    document.getElementById('messageModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('messageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeMessageModal();
+    }
+});
+</script>
+{% endblock %}

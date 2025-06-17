@@ -4,6 +4,7 @@ Contains routes for the homepage, about page, features page, etc.
 """
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 from auth import authenticate_user, login_user
+from db import db
 
 # Create a Blueprint for the main routes
 main_bp = Blueprint('main', __name__)
@@ -30,7 +31,107 @@ def features():
 @main_bp.route('/discover')
 def discover():
     """Renders the discover page for finding tutors."""
-    return render_template('discover.html')
+    from models.tutor import Tutor
+    
+    # Get search and filter parameters
+    search = request.args.get('search', '')
+    subject_filter = request.args.get('subject', '')
+    
+    # Build query for tutors
+    query = Tutor.query.filter(Tutor.is_active == True)
+    
+    # Apply search filter
+    if search:
+        query = query.filter(
+            db.or_(
+                Tutor.fullname.ilike(f'%{search}%'),
+                Tutor.subjects_taught.ilike(f'%{search}%'),
+                Tutor.bio.ilike(f'%{search}%')
+            )
+        )
+    
+    # Apply subject filter
+    if subject_filter and subject_filter != 'All Subjects':
+        query = query.filter(Tutor.subjects_taught.ilike(f'%{subject_filter}%'))
+    
+    # Get all tutors ordered by creation date (newest first)
+    tutors = query.order_by(Tutor.created_at.desc()).all()
+    
+    # Get unique subjects for filter buttons
+    all_tutors = Tutor.query.filter(Tutor.is_active == True).all()
+    subjects = set()
+    for tutor in all_tutors:
+        if tutor.subjects_taught:
+            for subject in tutor.subjects_taught.split(','):
+                subjects.add(subject.strip())
+    subjects = sorted(list(subjects))
+    
+    return render_template('discover.html', tutors=tutors, subjects=subjects, 
+                         current_search=search, current_subject=subject_filter)
+
+
+@main_bp.route('/tutor/<int:tutor_id>')
+def tutor_detail(tutor_id):
+    """Display detailed information about a specific tutor."""
+    from models.tutor import Tutor
+    
+    tutor = Tutor.query.get_or_404(tutor_id)
+    
+    # Check if tutor is active
+    if not tutor.is_active:
+        flash('This tutor profile is not available.', 'error')
+        return redirect(url_for('main.discover'))
+    
+    return render_template('tutor_detail.html', tutor=tutor)
+
+
+@main_bp.route('/send_message', methods=['POST'])
+def send_message():
+    """Handle sending messages from students to tutors."""
+    from models.message import Message
+    from models.tutor import Tutor
+    from auth import login_required, role_required
+    
+    # Check if user is logged in and is a student
+    if 'user_id' not in session or session.get('user_role') != 'student':
+        flash('You must be logged in as a student to send messages.', 'error')
+        return redirect(url_for('main.login'))
+    
+    tutor_id = request.form.get('tutor_id')
+    subject = request.form.get('subject')
+    message_content = request.form.get('message')
+    
+    # Validation
+    if not all([tutor_id, subject, message_content]):
+        flash('All fields are required.', 'error')
+        return redirect(request.referrer or url_for('main.discover'))
+    
+    # Verify tutor exists and is active
+    tutor = Tutor.query.get(tutor_id)
+    if not tutor or not tutor.is_active:
+        flash('Tutor not found or not available.', 'error')
+        return redirect(url_for('main.discover'))
+    
+    try:
+        # Create the message
+        message = Message.create(
+            sender_id=session['user_id'],
+            receiver_id=tutor_id,
+            subject=subject.strip(),
+            message=message_content.strip()
+        )
+        
+        # Log success
+        current_app.logger.info(f"Message sent from student {session['user_id']} to tutor {tutor_id}")
+        
+        flash(f'Your message has been sent to {tutor.fullname}!', 'success')
+        return redirect(url_for('main.tutor_detail', tutor_id=tutor_id))
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error sending message: {str(e)}")
+        flash('An error occurred while sending your message. Please try again.', 'error')
+        return redirect(url_for('main.tutor_detail', tutor_id=tutor_id))
 
 
 @main_bp.route('/role-selection')
