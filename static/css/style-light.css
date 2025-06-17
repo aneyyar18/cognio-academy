@@ -1,0 +1,496 @@
+/* static/css/style-light.css - Light Theme */
+
+/* Apply Inter font globally and set base background/text colors for light theme */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc; /* slate-50 */
+    color: #334155; /* slate-700 */
+}
+
+/* Custom button style (mirrors .btn-primary setup) */
+.btn-primary {
+    /* Light theme button styling handled by Tailwind classes in HTML */
+}
+
+/* Input field base styling for light theme */
+.form-input, .form-select, .form-textarea {
+    /* Light theme form styling handled by Tailwind classes in HTML */
+}
+
+/* Fix for select elements - light theme version */
+select.form-select {
+    width: 100%;
+    padding: 0.5rem 1rem; 
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    background-color: #ffffff; /* white */
+    border: 1px solid #d1d5db; /* gray-300 */
+    color: #374151; /* gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+}
+
+/* Fieldset styling for light theme */
+.fieldset-group {
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1.5rem; /* p-6 */
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+.fieldset-legend {
+    padding-left: 0.5rem; /* px-2 */
+    padding-right: 0.5rem; /* px-2 */
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+    color: #0891b2; /* cyan-600 */
+}
+
+/* Flash messages - light theme */
+.flash-messages {
+    margin-bottom: 1rem;
+}
+
+.flash-message {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.flash-success {
+    background-color: rgba(16, 185, 129, 0.1); /* emerald-500 with light opacity */
+    border: 1px solid #10b981; /* emerald-500 */
+    color: #065f46; /* emerald-800 */
+}
+
+.flash-error {
+    background-color: rgba(239, 68, 68, 0.1); /* red-500 with light opacity */
+    border: 1px solid #ef4444; /* red-500 */
+    color: #991b1b; /* red-800 */
+}
+
+.flash-info {
+    background-color: rgba(59, 130, 246, 0.1); /* blue-500 with light opacity */
+    border: 1px solid #3b82f6; /* blue-500 */
+    color: #1e40af; /* blue-800 */
+}
+
+/* Dashboard cards and layouts - light theme */
+.dashboard-card {
+    background-color: #ffffff; /* white */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.dashboard-card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0; /* slate-200 */
+    font-weight: 600;
+    background-color: #f8fafc; /* slate-50 */
+}
+
+.dashboard-card-body {
+    padding: 1.5rem;
+}
+
+/* Profile page styles - light theme */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1.5rem;
+    border: 3px solid #0891b2; /* cyan-600 */
+}
+
+.profile-info-section {
+    background-color: #ffffff; /* white */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-section-title {
+    color: #0891b2; /* cyan-600 */
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0; /* slate-200 */
+}
+
+/* Dashboard Welcome Header Styling - Light Theme */
+.welcome-header {
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.welcome-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Light Theme Navigation Card Styling */
+.nav-item-card {
+    background-color: #f1f5f9; /* slate-100 */
+    border-color: #cbd5e1; /* slate-300 */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-item-card:hover {
+    background-color: #e2e8f0; /* slate-200 */
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: rgba(8, 145, 178, 0.5) !important;
+}
+
+.nav-item-card .nav-icon {
+    transition: transform 0.3s ease;
+}
+
+.nav-item-card:hover .nav-icon {
+    transform: scale(1.1);
+}
+
+/* Dashboard Card Enhancements - Light Theme */
+.dashboard-card-dark {
+    background-color: #ffffff; /* white */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card-dark:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Alert Styling - Light Theme */
+.alert-dark {
+    background-color: #f1f5f9; /* slate-100 */
+    border-color: #0891b2; /* cyan-600 */
+    color: #475569; /* slate-600 */
+}
+
+/* Avatar Circle - Light Theme */
+.avatar-circle {
+    background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+}
+
+/* Stats Cards Animation - Light Theme */
+.stats-card-dark {
+    background-color: #ffffff; /* white */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    transition: all 0.3s ease;
+}
+
+.stats-card-dark:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(8, 145, 178, 0.3);
+}
+
+/* Progress Bar Styling - Light Theme */
+.progress-dark {
+    background-color: #f1f5f9; /* slate-100 */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-dark {
+    transition: width 0.6s ease;
+    background: linear-gradient(90deg, #0891b2 0%, #3b82f6 100%);
+}
+
+/* Button Enhancements - Light Theme */
+.btn-dark-theme {
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    background-color: #ffffff; /* white */
+    border-color: #0891b2; /* cyan-600 */
+    color: #0891b2; /* cyan-600 */
+}
+
+.btn-dark-theme:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(8, 145, 178, 0.2);
+    background-color: #0891b2; /* cyan-600 */
+    color: #ffffff; /* white */
+}
+
+/* Light theme color overrides for consistency */
+.text-primary-dark { color: #0891b2 !important; } /* cyan-600 */
+.text-secondary-dark { color: #64748b !important; } /* slate-500 */
+.text-success-dark { color: #059669 !important; } /* emerald-600 */
+.text-warning-dark { color: #d97706 !important; } /* amber-600 */
+.text-danger-dark { color: #dc2626 !important; } /* red-600 */
+.text-info-dark { color: #2563eb !important; } /* blue-600 */
+
+.bg-primary-dark { background-color: #0891b2 !important; } /* cyan-600 */
+.bg-secondary-dark { background-color: #f1f5f9 !important; } /* slate-100 */
+.bg-success-dark { background-color: #059669 !important; } /* emerald-600 */
+.bg-warning-dark { background-color: #d97706 !important; } /* amber-600 */
+.bg-danger-dark { background-color: #dc2626 !important; } /* red-600 */
+.bg-info-dark { background-color: #2563eb !important; } /* blue-600 */
+
+.border-primary-dark { border-color: #0891b2 !important; } /* cyan-600 */
+.border-secondary-dark { border-color: #e2e8f0 !important; } /* slate-200 */
+
+/* Ensure all cards have consistent light styling */
+.card-dark {
+    background-color: #ffffff !important; /* white */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.card-header-dark {
+    background-color: #0891b2 !important; /* cyan-600 */
+    color: #ffffff !important; /* white */
+    border-bottom: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+/* Profile Page Specific Styling - Light Theme */
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 4px solid #0891b2;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.profile-picture:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(8, 145, 178, 0.3);
+}
+
+.camera-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(135deg, #0891b2 0%, #3b82f6 100%);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.camera-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
+}
+
+/* Profile Info Cards - Light Theme */
+.profile-info-card {
+    background-color: #f8fafc; /* slate-50 */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.profile-info-card:hover {
+    background-color: #f1f5f9; /* slate-100 */
+    transform: translateX(4px);
+}
+
+.profile-info-icon {
+    color: #0891b2; /* cyan-600 */
+    margin-right: 0.75rem;
+    width: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* Subject Tags - Light Theme */
+.subject-tag {
+    background: linear-gradient(135deg, #0891b2 0%, #3b82f6 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+    margin: 0.25rem;
+    box-shadow: 0 2px 8px rgba(8, 145, 178, 0.2);
+    transition: all 0.3s ease;
+}
+
+.subject-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+}
+
+/* Quick Stats Cards - Light Theme */
+.quick-stat-card {
+    background-color: #ffffff; /* white */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0; /* slate-200 */
+}
+
+.quick-stat-card:hover {
+    background-color: #f8fafc; /* slate-50 */
+    border-color: #0891b2; /* cyan-600 */
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.quick-stat-number {
+    color: #0891b2; /* cyan-600 */
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.quick-stat-label {
+    color: #64748b; /* slate-500 */
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Section Headers - Light Theme */
+.profile-section-header {
+    background: linear-gradient(135deg, #0891b2 0%, #3b82f6 100%);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.profile-section-header i {
+    margin-right: 0.75rem;
+}
+
+/* Bio Section - Light Theme */
+.bio-content {
+    background-color: #f8fafc; /* slate-50 */
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    line-height: 1.6;
+    color: #475569; /* slate-600 */
+}
+
+/* Achievement Cards - Light Theme */
+.achievement-card {
+    background-color: #ffffff; /* white */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0; /* slate-200 */
+}
+
+.achievement-card:hover {
+    background-color: #f8fafc; /* slate-50 */
+    border-color: #0891b2; /* cyan-600 */
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .profile-picture {
+        width: 96px;
+        height: 96px;
+    }
+    
+    .camera-button {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .subject-tag {
+        margin: 0.125rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .profile-info-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-info-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .nav-item-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading states for profile pictures - Light Theme */
+.profile-picture-loading {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}

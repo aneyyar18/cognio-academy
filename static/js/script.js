@@ -3,6 +3,89 @@ document.addEventListener('DOMContentLoaded', function() {
     const tagButtons = document.querySelectorAll('.tag-button');
     const tutorResults = document.querySelector('.tutor-results');
 
+    // Theme switching functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+    const themeStylesheet = document.getElementById('theme-stylesheet');
+    
+    // Load saved theme preference or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    
+    // Theme toggle event listeners for both desktop and mobile
+    function handleThemeToggle() {
+        const currentTheme = getCurrentTheme();
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', handleThemeToggle);
+    }
+    
+    if (themeToggleMobile) {
+        themeToggleMobile.addEventListener('click', handleThemeToggle);
+    }
+    
+    function getCurrentTheme() {
+        if (themeStylesheet) {
+            return themeStylesheet.href.includes('style-light.css') ? 'light' : 'dark';
+        }
+        return 'dark';
+    }
+    
+    function setTheme(theme) {
+        if (themeStylesheet) {
+            const basePath = themeStylesheet.href.replace(/\/[^\/]*$/, '/');
+            if (theme === 'light') {
+                themeStylesheet.href = basePath + 'style-light.css';
+                document.body.className = document.body.className.replace('bg-slate-900', 'bg-slate-50');
+                document.body.className = document.body.className.replace('text-gray-200', 'text-gray-800');
+                if (!document.body.className.includes('bg-slate-50')) {
+                    document.body.className += ' bg-slate-50';
+                }
+                if (!document.body.className.includes('text-gray-800')) {
+                    document.body.className += ' text-gray-800';
+                }
+            } else {
+                themeStylesheet.href = basePath + 'style.css';
+                document.body.className = document.body.className.replace('bg-slate-50', 'bg-slate-900');
+                document.body.className = document.body.className.replace('text-gray-800', 'text-gray-200');
+                if (!document.body.className.includes('bg-slate-900')) {
+                    document.body.className += ' bg-slate-900';
+                }
+                if (!document.body.className.includes('text-gray-200')) {
+                    document.body.className += ' text-gray-200';
+                }
+            }
+        }
+        
+        // Update theme toggle button text/icon for both desktop and mobile
+        const toggleButtons = [themeToggle, themeToggleMobile];
+        toggleButtons.forEach(button => {
+            if (button) {
+                const icon = button.querySelector('i');
+                const text = button.querySelector('.theme-text');
+                if (theme === 'light') {
+                    if (icon) {
+                        icon.className = 'fas fa-moon';
+                    }
+                    if (text) {
+                        text.textContent = button === themeToggleMobile ? 'Dark Theme' : 'Dark';
+                    }
+                } else {
+                    if (icon) {
+                        icon.className = 'fas fa-sun';
+                    }
+                    if (text) {
+                        text.textContent = button === themeToggleMobile ? 'Light Theme' : 'Light';
+                    }
+                }
+            }
+        });
+    }
+
     // Search button functionality (if you add a search button)
     searchInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
