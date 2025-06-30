@@ -12,7 +12,8 @@ SECRET_KEY = 'change_this_later'
 
 # Database configuration
 SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "SqliteDb/TutorConnect.db")}'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+SQLALCHEMY_ECHO = True
 
 # Authentication settings
 AUTH_TOKEN_EXPIRY = 86400  # 24 hours in seconds

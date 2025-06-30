@@ -4,6 +4,7 @@ Application factory for TutorConnect.
 import os
 import datetime
 from flask import Flask, session
+from flask_moment import Moment
 
 def create_app(config_filename=None):
     """
@@ -18,6 +19,8 @@ def create_app(config_filename=None):
     """
     # Create the Flask application
     app = Flask(__name__)
+    moment = Moment(app)
+
     
     # Load the default configuration
     app.config.from_object('config')
@@ -66,9 +69,11 @@ def register_blueprints(app):
     from views.student import student_bp
     from views.tutor import tutor_bp
     from views.auth import auth_bp
+    from views.admin import admin_bp
     
     # Register blueprints
     app.register_blueprint(main_bp)
     app.register_blueprint(student_bp, url_prefix='/student')
     app.register_blueprint(tutor_bp, url_prefix='/tutor')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')

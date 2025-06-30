@@ -149,6 +149,8 @@ def login():
             return redirect(url_for('student.dashboard'))
         elif session['user_role'] == 'tutor':
             return redirect(url_for('tutor.dashboard'))
+        elif session['user_role'] == 'admin':
+            return redirect(url_for('admin.dashboard'))
         return redirect(url_for('main.index'))
 
     # Handle form submission
@@ -164,9 +166,17 @@ def login():
         # Attempt to authenticate the user
         user = authenticate_user(email, password)
 
-        if user:
+        if user == 'unverified_tutor':
+            # Special case for unverified tutors
+            flash('Your tutor account is pending admin verification. Please wait for approval before logging in.', 'warning')
+            current_app.logger.info(f"Unverified tutor attempted login: {email}")
+            return render_template('login.html')
+        elif user:
             # Log the user in
-            login_user(user)
+            login_user(user.id, user.role.value, user.fullname)
+            
+            # Update last login for the user
+            user.update_last_login()
             
             # Set session permanency based on remember checkbox
             session.permanent = remember
@@ -182,6 +192,8 @@ def login():
                 return redirect(url_for('student.dashboard'))
             elif user.role.value == 'tutor':
                 return redirect(url_for('tutor.dashboard'))
+            elif user.role.value == 'admin':
+                return redirect(url_for('admin.dashboard'))
             else:
                 return redirect(url_for('main.index'))
         else:

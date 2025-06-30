@@ -4,24 +4,23 @@ Authentication utilities for TutorConnect application.
 from functools import wraps
 from flask import session, redirect, url_for, flash, current_app, request
 from models.student import Student
-from models.tutor import Tutor
+from models.tutor import Tutor, TutorStatus
+from models.admin import Admin
 from models.user import UserRole
 
-def login_user(user):
+def login_user(user_id, role, fullname):
     """
     Log in a user by storing their data in the session.
     
     Args:
-        user (User): The user object to log in
+        user_id (int): User ID
+        role (str): User role
+        fullname (str): User's full name
     """
-    # Update last login time
-    user.update_last_login()
-    
     # Store user info in session
-    session['user_id'] = user.id
-    session['user_role'] = user.role.value
-    session['user_email'] = user.email
-    session['user_name'] = user.fullname
+    session['user_id'] = user_id
+    session['user_role'] = role
+    session['user_name'] = fullname
     
     # Set session to expire after the configured time
     session.permanent = True
@@ -47,6 +46,8 @@ def get_current_user():
         return Student.query.get(user_id)
     elif role == UserRole.TUTOR.value:
         return Tutor.query.get(user_id)
+    elif role == UserRole.ADMIN.value:
+        return Admin.query.get(user_id)
     else:
         return None
 
@@ -67,10 +68,36 @@ def authenticate_user(email, password):
     # If not found, try as a tutor
     if not user:
         user = Tutor.query.filter_by(email=email).first()
+        # Check if tutor is verified before allowing login
+        if user and user.status != TutorStatus.VERIFIED:
+            # Return a special indicator for unverified tutors
+            return 'unverified_tutor'
+    
+    # If still not found, try as admin (admin login should use separate function)
+    if not user:
+        user = Admin.query.filter_by(email=email).first()
         
     # Verify password if user was found
     if user and user.verify_password(password):
         return user
+        
+    return None
+
+def authenticate_admin(email, password):
+    """
+    Authenticate an admin user with email and password.
+    
+    Args:
+        email (str): The admin's email
+        password (str): The admin's password
+        
+    Returns:
+        Admin or None: The authenticated admin or None if authentication failed
+    """
+    admin = Admin.query.filter_by(email=email).first()
+    
+    if admin and admin.verify_password(password):
+        return admin
         
     return None
 

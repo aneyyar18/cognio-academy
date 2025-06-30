@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% block title %}{{ tutor.fullname }} - Admin - TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8 flex-grow">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-user-tie text-cyan-400 mr-3"></i>
+                {{ tutor.fullname }}
+            </h1>
+            <p class="text-slate-400">Tutor Application Review</p>
+        </div>
+        <a href="{{ url_for('admin.tutors') }}" 
+           class="btn-dark-theme">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Tutors
+        </a>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages mb-6">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Profile Information -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Basic Information -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h2 class="text-xl font-semibold text-cyan-400">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Basic Information
+                    </h2>
+                </div>
+                <div class="dashboard-card-body">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Full Name</label>
+                            <p class="text-slate-200 font-medium">{{ tutor.fullname }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Email</label>
+                            <p class="text-slate-200">{{ tutor.email }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Phone</label>
+                            <p class="text-slate-200">{{ tutor.phone or 'Not provided' }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Timezone</label>
+                            <p class="text-slate-200">{{ tutor.timezone }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Application Date</label>
+                            <p class="text-slate-200">{{ moment(tutor.created_at).format('MMMM Do, YYYY') if tutor.created_at else 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Last Login</label>
+                            <p class="text-slate-200">{{ moment(tutor.last_login).format('MMMM Do, YYYY') if tutor.last_login else 'Never' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h2 class="text-xl font-semibold text-cyan-400">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        Professional Information
+                    </h2>
+                </div>
+                <div class="dashboard-card-body">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Highest Qualification</label>
+                            <p class="text-slate-200 font-medium">{{ tutor.qualification }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Years of Experience</label>
+                            <p class="text-slate-200 font-medium">{{ tutor.experience }} years</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Hourly Rate</label>
+                            <p class="text-slate-200 font-medium">
+                                {% if tutor.hourly_rate %}
+                                    ${{ "%.2f"|format(tutor.hourly_rate) }} USD
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Subjects Taught</label>
+                        <div class="flex flex-wrap gap-2">
+                            {% for subject in tutor.subjects_taught.split(',') if tutor.subjects_taught %}
+                                <span class="subject-tag">{{ subject.strip() }}</span>
+                            {% else %}
+                                <span class="text-slate-500">No subjects specified</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Professional Bio</label>
+                        <div class="bio-content">
+                            {{ tutor.bio or 'No bio provided' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status and Actions -->
+        <div class="space-y-6">
+            <!-- Current Status -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h2 class="text-xl font-semibold text-cyan-400">
+                        <i class="fas fa-flag mr-2"></i>
+                        Current Status
+                    </h2>
+                </div>
+                <div class="dashboard-card-body text-center">
+                    <div class="mb-4">
+                        {% if tutor.profile_pic %}
+                            <img src="{{ tutor.profile_pic }}" alt="{{ tutor.fullname }}" 
+                                 class="w-24 h-24 rounded-full object-cover mx-auto border-4 border-cyan-400">
+                        {% else %}
+                            <div class="w-24 h-24 bg-slate-600 rounded-full flex items-center justify-center mx-auto border-4 border-cyan-400">
+                                <i class="fas fa-user text-slate-400 text-2xl"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="text-center">
+                        <span class="inline-flex items-center px-4 py-2 text-lg font-semibold rounded-full
+                            {% if tutor.status.value == 'pending' %}bg-orange-500 bg-opacity-20 text-orange-300
+                            {% elif tutor.status.value == 'verified' %}bg-green-500 bg-opacity-20 text-green-300
+                            {% elif tutor.status.value == 'denied' %}bg-red-500 bg-opacity-20 text-red-300
+                            {% elif tutor.status.value == 'banned' %}bg-red-700 bg-opacity-20 text-red-400
+                            {% endif %}">
+                            {% if tutor.status.value == 'pending' %}
+                                <i class="fas fa-clock mr-2"></i>
+                            {% elif tutor.status.value == 'verified' %}
+                                <i class="fas fa-check mr-2"></i>
+                            {% elif tutor.status.value == 'denied' %}
+                                <i class="fas fa-times mr-2"></i>
+                            {% elif tutor.status.value == 'banned' %}
+                                <i class="fas fa-ban mr-2"></i>
+                            {% endif %}
+                            {#
+                            {{ tutor.status.value.title() }}
+                            #}
+                        </span>
+                    </div>
+                    
+                    {% if tutor.status.value == 'pending' %}
+                        <p class="text-sm text-slate-400 mt-2">Awaiting admin verification</p>
+                    {% elif tutor.status.value == 'verified' %}
+                        <p class="text-sm text-slate-400 mt-2">Can access the platform</p>
+                    {% elif tutor.status.value == 'denied' %}
+                        <p class="text-sm text-slate-400 mt-2">Application rejected</p>
+                    {% elif tutor.status.value == 'banned' %}
+                        <p class="text-sm text-slate-400 mt-2">Banned from platform</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h2 class="text-xl font-semibold text-cyan-400">
+                        <i class="fas fa-tools mr-2"></i>
+                        Admin Actions
+                    </h2>
+                </div>
+                <div class="dashboard-card-body">
+                    <form method="POST" action="{{ url_for('admin.update_tutor_status', tutor_id=tutor.id) }}" class="space-y-4">
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-slate-300 mb-2">
+                                Change Status
+                            </label>
+                            <select id="status" name="status" 
+                                    class="settings-form-input"
+                                    onchange="updateReasonField()">
+                                <option value="">-- Select Status --</option>
+                                <option value="pending" {% if tutor.status.value == 'pending' %}selected{% endif %}>
+                                    Pending
+                                </option>
+                                <option value="verified" {% if tutor.status.value == 'verified' %}selected{% endif %}>
+                                    Verified
+                                </option>
+                                <option value="denied" {% if tutor.status.value == 'denied' %}selected{% endif %}>
+                                    Denied
+                                </option>
+                                <option value="banned" {% if tutor.status.value == 'banned' %}selected{% endif %}>
+                                    Banned
+                                </option>
+                            </select>
+                        </div>
+
+                        <div id="reasonField" style="display: none;">
+                            <label for="reason" class="block text-sm font-medium text-slate-300 mb-2">
+                                Reason (Optional)
+                            </label>
+                            <textarea id="reason" name="reason" rows="3" 
+                                      class="settings-form-input"
+                                      placeholder="Provide a reason for this status change..."></textarea>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full settings-btn-primary">
+                            <i class="fas fa-save mr-2"></i>
+                            Update Status
+                        </button>
+                    </form>
+
+                    <!-- Quick Actions -->
+                    <div class="mt-6 pt-6 border-t border-slate-700">
+                        <h4 class="text-sm font-medium text-slate-300 mb-3">Quick Actions:</h4>
+                        <div class="space-y-2">
+                            {% if tutor.status.value == 'pending' %}
+                                <form method="POST" action="{{ url_for('admin.update_tutor_status', tutor_id=tutor.id) }}" class="inline-block w-full">
+                                    <input type="hidden" name="status" value="verified">
+                                    <button type="submit" 
+                                            class="w-full px-3 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition duration-300">
+                                        <i class="fas fa-check mr-2"></i>
+                                        Approve Tutor
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('admin.update_tutor_status', tutor_id=tutor.id) }}" class="inline-block w-full">
+                                    <input type="hidden" name="status" value="denied">
+                                    <button type="submit" 
+                                            class="w-full px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition duration-300">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Deny Application
+                                    </button>
+                                </form>
+                            {% elif tutor.status.value == 'verified' %}
+                                <form method="POST" action="{{ url_for('admin.update_tutor_status', tutor_id=tutor.id) }}" class="inline-block w-full">
+                                    <input type="hidden" name="status" value="banned">
+                                    <button type="submit" 
+                                            class="w-full px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition duration-300"
+                                            onclick="return confirm('Are you sure you want to ban this tutor?')">
+                                        <i class="fas fa-ban mr-2"></i>
+                                        Ban Tutor
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateReasonField() {
+    const statusSelect = document.getElementById('status');
+    const reasonField = document.getElementById('reasonField');
+    
+    if (statusSelect.value === 'denied' || statusSelect.value === 'banned') {
+        reasonField.style.display = 'block';
+    } else {
+        reasonField.style.display = 'none';
+    }
+}
+
+// Simple date formatting fallback
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof moment === 'undefined') {
+        // Add basic date formatting for browsers without moment.js
+        const formatDate = (dateStr) => {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        };
+        
+        // Update any date elements that need formatting
+        const dateElements = document.querySelectorAll('[data-date]');
+        dateElements.forEach(el => {
+            el.textContent = formatDate(el.dataset.date);
+        });
+    }
+});
+</script>
+{% endblock %}

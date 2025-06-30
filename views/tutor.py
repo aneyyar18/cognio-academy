@@ -4,6 +4,8 @@ Contains routes for tutor registration, profile management, etc.
 """
 from flask import (Blueprint, render_template, request, url_for, redirect, 
                   flash, current_app, session)
+from flask_moment import Moment
+
 from sqlalchemy.exc import IntegrityError
 
 from db import db
@@ -119,7 +121,7 @@ def signup_submit():
             current_app.logger.info(f"Tutor account created: {fullname}, {email}")
             
             # Flash success message and redirect to login
-            flash('Tutor account created successfully! Please log in.', 'success')
+            flash('Tutor account created successfully! Your account is pending admin verification. You will be notified once approved.', 'success')
             return redirect(url_for('main.login'))
             
         except IntegrityError:
@@ -172,6 +174,108 @@ def profile():
         return redirect(url_for('main.index'))
         
     return render_template('tutor/profile.html', tutor=tutor)
+
+
+@tutor_bp.route('/settings')
+@login_required
+@role_required(['tutor'])
+def settings():
+    """Tutor settings page - Profile section."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/settings.html', user=tutor, active_section='profile')
+
+
+@tutor_bp.route('/settings/appearance')
+@login_required
+@role_required(['tutor'])
+def settings_appearance():
+    """Tutor settings page - Appearance section."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/settings.html', user=tutor, active_section='appearance')
+
+
+@tutor_bp.route('/settings/notifications')
+@login_required
+@role_required(['tutor'])
+def settings_notifications():
+    """Tutor settings page - Notifications section."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/settings.html', user=tutor, active_section='notifications')
+
+
+@tutor_bp.route('/settings/privacy')
+@login_required
+@role_required(['tutor'])
+def settings_privacy():
+    """Tutor settings page - Privacy section."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/settings.html', user=tutor, active_section='privacy')
+
+
+@tutor_bp.route('/settings/profile/update', methods=['POST'])
+@login_required
+@role_required(['tutor'])
+def update_profile():
+    """Update tutor profile information."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    try:
+        # Update profile fields
+        tutor.fullname = request.form.get('fullname', tutor.fullname)
+        tutor.email = request.form.get('email', tutor.email)
+        tutor.phone = request.form.get('phone', tutor.phone)
+        tutor.timezone = request.form.get('timezone', tutor.timezone)
+        tutor.bio = request.form.get('bio', tutor.bio)
+        
+        # Handle hourly rate if provided
+        hourly_rate_str = request.form.get('hourly_rate')
+        if hourly_rate_str:
+            try:
+                tutor.hourly_rate = float(hourly_rate_str)
+            except ValueError:
+                pass  # Keep existing rate if invalid input
+        
+        # Handle profile picture upload if provided
+        # (This would require additional file handling logic)
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating tutor profile: {str(e)}")
+        flash('An error occurred while updating your profile. Please try again.', 'error')
+    
+    return redirect(url_for('tutor.settings'))
 
 
 @tutor_bp.route('/messages')

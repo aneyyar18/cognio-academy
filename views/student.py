@@ -117,3 +117,98 @@ def profile():
         return redirect(url_for('main.index'))
         
     return render_template('student/profile.html', student=student)
+
+
+@student_bp.route('/settings')
+@login_required
+@role_required(['student'])
+def settings():
+    """Student settings page - Profile section."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('student/settings.html', user=student, active_section='profile')
+
+
+@student_bp.route('/settings/appearance')
+@login_required
+@role_required(['student'])
+def settings_appearance():
+    """Student settings page - Appearance section."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('student/settings.html', user=student, active_section='appearance')
+
+
+@student_bp.route('/settings/notifications')
+@login_required
+@role_required(['student'])
+def settings_notifications():
+    """Student settings page - Notifications section."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('student/settings.html', user=student, active_section='notifications')
+
+
+@student_bp.route('/settings/privacy')
+@login_required
+@role_required(['student'])
+def settings_privacy():
+    """Student settings page - Privacy section."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('student/settings.html', user=student, active_section='privacy')
+
+
+@student_bp.route('/settings/profile/update', methods=['POST'])
+@login_required
+@role_required(['student'])
+def update_profile():
+    """Update student profile information."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    try:
+        # Update profile fields
+        student.fullname = request.form.get('fullname', student.fullname)
+        student.email = request.form.get('email', student.email)
+        student.phone = request.form.get('phone', student.phone)
+        student.timezone = request.form.get('timezone', student.timezone)
+        student.study_level = request.form.get('study_level', student.study_level)
+        student.learning_goals = request.form.get('learning_goals', student.learning_goals)
+        
+        # Handle profile picture upload if provided
+        # (This would require additional file handling logic)
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating student profile: {str(e)}")
+        flash('An error occurred while updating your profile. Please try again.', 'error')
+    
+    return redirect(url_for('student.settings'))

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Students - Admin - TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8 flex-grow">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-graduation-cap text-cyan-400 mr-3"></i>
+                Students
+            </h1>
+            <p class="text-slate-400">View and monitor student registrations</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}" 
+           class="btn-dark-theme">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Students List -->
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <h2 class="text-xl font-semibold text-cyan-400">All Students</h2>
+        </div>
+        <div class="dashboard-card-body p-0">
+            {% if students %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                                    Student
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                                    Study Level
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                                    Registered
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                                    Last Login
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            {% for student in students %}
+                            <tr class="hover:bg-slate-700 transition duration-300">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center mr-4">
+                                            <i class="fas fa-user text-slate-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-slate-200">{{ student.fullname }}</div>
+                                            <div class="text-sm text-slate-400">{{ student.email }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-slate-200">{{ student.study_level.title() if student.study_level else 'Not specified' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                                    {{ moment(student.created_at).format('MMM DD, YYYY') if student.created_at else 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                                    {{ moment(student.last_login).format('MMM DD, YYYY') if student.last_login else 'Never' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                        {% if student.is_active %}bg-green-500 bg-opacity-20 text-green-300
+                                        {% else %}bg-red-500 bg-opacity-20 text-red-300{% endif %}">
+                                        {% if student.is_active %}
+                                            <i class="fas fa-check mr-1"></i>
+                                            Active
+                                        {% else %}
+                                            <i class="fas fa-times mr-1"></i>
+                                            Inactive
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-slate-500 text-6xl mb-4"></i>
+                    <h3 class="text-xl font-medium text-slate-300 mb-2">No students found</h3>
+                    <p class="text-slate-500">No students have registered yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple date formatting fallback
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof moment === 'undefined') {
+        // Replace moment calls with basic date formatting
+        const dateElements = document.querySelectorAll('[data-date]');
+        dateElements.forEach(el => {
+            const date = new Date(el.dataset.date);
+            el.textContent = date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -2,8 +2,16 @@
 Tutor model for TutorConnect application.
 """
 import decimal
+from enum import Enum
 from db import db
 from models.user import User, UserRole
+
+class TutorStatus(Enum):
+    """Enum for tutor verification status."""
+    PENDING = 'pending'
+    VERIFIED = 'verified' 
+    DENIED = 'denied'
+    BANNED = 'banned'
 
 class Tutor(User):
     """Tutor user model extending the base User model."""
@@ -11,6 +19,9 @@ class Tutor(User):
     
     # Override role to set it as TUTOR
     role = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.TUTOR)
+    
+    # Tutor verification status
+    status = db.Column(db.Enum(TutorStatus), nullable=False, default=TutorStatus.PENDING)
     
     # Tutor-specific fields
     qualification = db.Column(db.String(100), nullable=False)
@@ -65,6 +76,7 @@ class Tutor(User):
         """Convert the tutor object to a dictionary."""
         base_dict = super().to_dict()
         tutor_dict = {
+            'status': self.status.value,
             'qualification': self.qualification,
             'experience': self.experience,
             'subjects_taught': self.subjects_taught.split(',') if self.subjects_taught else [],
@@ -73,3 +85,23 @@ class Tutor(User):
             'profile_pic': self.profile_pic
         }
         return {**base_dict, **tutor_dict}
+    
+    def update_status(self, new_status, admin_id=None):
+        """Update tutor status. Should only be called by admin users."""
+        if isinstance(new_status, str):
+            new_status = TutorStatus(new_status)
+        self.status = new_status
+        # TODO: Add audit logging with admin_id
+        db.session.commit()
+    
+    def is_verified(self):
+        """Check if tutor is verified and can access the system."""
+        return self.status == TutorStatus.VERIFIED
+    
+    def is_pending(self):
+        """Check if tutor is pending verification."""
+        return self.status == TutorStatus.PENDING
+    
+    def is_denied_or_banned(self):
+        """Check if tutor is denied or banned."""
+        return self.status in [TutorStatus.DENIED, TutorStatus.BANNED]

@@ -1,0 +1,159 @@
+<div class="settings-section">
+    <h2 class="settings-section-title">
+        <i class="fas fa-user-shield mr-3"></i>
+        Admin Profile
+    </h2>
+    
+    <div class="space-y-6">
+        <!-- Profile Information -->
+        <div class="settings-form-group">
+            <label class="settings-form-label">Full Name</label>
+            <input type="text" 
+                   value="{{ user.fullname or '' }}" 
+                   class="settings-form-input"
+                   readonly>
+            <p class="text-slate-400 text-sm mt-1">Contact system administrator to change admin details</p>
+        </div>
+        
+        <div class="settings-form-group">
+            <label class="settings-form-label">Email Address</label>
+            <input type="email" 
+                   value="{{ user.email or '' }}" 
+                   class="settings-form-input"
+                   readonly>
+        </div>
+        
+        <div class="settings-form-group">
+            <label class="settings-form-label">Admin Level</label>
+            <input type="text" 
+                   value="{{ user.admin_level.title() if user.admin_level else 'Standard' }}" 
+                   class="settings-form-input"
+                   readonly>
+        </div>
+        
+        <div class="settings-form-group">
+            <label class="settings-form-label">Timezone</label>
+            <input type="text" 
+                   value="{{ user.timezone or 'UTC' }}" 
+                   class="settings-form-input"
+                   readonly>
+        </div>
+        
+        <!-- Activity Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="settings-form-group">
+                <label class="settings-form-label">Account Created</label>
+                <input type="text" 
+                       value="{{ moment(user.created_at).format('MMMM Do, YYYY') if user.created_at else 'N/A' }}" 
+                       class="settings-form-input"
+                       readonly>
+            </div>
+            
+            <div class="settings-form-group">
+                <label class="settings-form-label">Last Login</label>
+                <input type="text" 
+                       value="{{ moment(user.last_login).format('MMMM Do, YYYY [at] h:mm A') if user.last_login else 'Current session' }}" 
+                       class="settings-form-input"
+                       readonly>
+            </div>
+        </div>
+        
+        <div class="settings-form-group">
+            <label class="settings-form-label">Last Admin Action</label>
+            <input type="text" 
+                   value="{{ moment(user.last_action).format('MMMM Do, YYYY [at] h:mm A') if user.last_action else 'No recent actions' }}" 
+                   class="settings-form-input"
+                   readonly>
+        </div>
+        
+        <!-- System Information -->
+        <div class="bg-slate-700 rounded-lg p-4 mt-6">
+            <h3 class="text-lg font-medium text-cyan-400 mb-4">
+                <i class="fas fa-info-circle mr-2"></i>
+                System Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-slate-400">User ID:</span>
+                    <span class="text-slate-200 ml-2">{{ user.id }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-400">Role:</span>
+                    <span class="text-slate-200 ml-2">{{ user.role.value.title() }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-400">Status:</span>
+                    <span class="text-green-400 ml-2">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        Active
+                    </span>
+                </div>
+                <div>
+                    <span class="text-slate-400">Session:</span>
+                    <span class="text-slate-200 ml-2">{{ session.get('user_id', 'Unknown') }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="bg-slate-700 rounded-lg p-4 mt-6">
+            <h3 class="text-lg font-medium text-cyan-400 mb-4">
+                <i class="fas fa-bolt mr-2"></i>
+                Quick Actions
+            </h3>
+            <div class="space-y-3">
+                <a href="{{ url_for('admin.tutors', status='pending') }}" 
+                   class="flex items-center p-3 bg-orange-500 bg-opacity-20 rounded hover:bg-opacity-30 transition duration-300">
+                    <i class="fas fa-clock text-orange-400 mr-3"></i>
+                    <span class="text-orange-300">Review Pending Tutors</span>
+                </a>
+                
+                <a href="{{ url_for('admin.tutors') }}" 
+                   class="flex items-center p-3 bg-cyan-500 bg-opacity-20 rounded hover:bg-opacity-30 transition duration-300">
+                    <i class="fas fa-users text-cyan-400 mr-3"></i>
+                    <span class="text-cyan-300">Manage All Tutors</span>
+                </a>
+                
+                <a href="{{ url_for('admin.students') }}" 
+                   class="flex items-center p-3 bg-blue-500 bg-opacity-20 rounded hover:bg-opacity-30 transition duration-300">
+                    <i class="fas fa-graduation-cap text-blue-400 mr-3"></i>
+                    <span class="text-blue-300">View Students</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Security Notice -->
+        <div class="bg-yellow-500 bg-opacity-10 border border-yellow-500 rounded-lg p-4 mt-6">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-triangle text-yellow-400 mt-1 mr-3"></i>
+                <div>
+                    <h4 class="text-yellow-300 font-medium mb-1">Security Notice</h4>
+                    <p class="text-yellow-200 text-sm">
+                        As an administrator, your actions are logged and monitored. 
+                        Always follow proper procedures when managing user accounts and data.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple date formatting fallback
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof moment === 'undefined') {
+        // Add basic date formatting for browsers without moment.js
+        const formatDate = (dateStr) => {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        };
+    }
+});
+</script>

@@ -103,8 +103,14 @@ def google_callback():
         user = Student.query.filter_by(email=email).first() or Tutor.query.filter_by(email=email).first()
         
         if user:
+            # Check if tutor is verified
+            if user.role.value == 'tutor' and not user.is_verified():
+                flash('Your tutor account is pending admin verification. Please wait for approval.', 'warning')
+                return redirect(url_for('main.login'))
+            
             # User exists, log them in
-            login_user(user)
+            login_user(user.id, user.role.value, user.fullname)
+            user.update_last_login()
             flash(f'Welcome back, {user.fullname}!', 'success')
             
             # Redirect based on role
@@ -220,8 +226,14 @@ def microsoft_callback():
         user = Student.query.filter_by(email=email).first() or Tutor.query.filter_by(email=email).first()
         
         if user:
+            # Check if tutor is verified
+            if user.role.value == 'tutor' and not user.is_verified():
+                flash('Your tutor account is pending admin verification. Please wait for approval.', 'warning')
+                return redirect(url_for('main.login'))
+            
             # User exists, log them in
-            login_user(user)
+            login_user(user.id, user.role.value, user.fullname)
+            user.update_last_login()
             flash(f'Welcome back, {user.fullname}!', 'success')
             
             # Redirect based on role

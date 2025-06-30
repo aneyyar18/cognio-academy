@@ -1,0 +1,88 @@
+<div class="settings-section">
+    <h2 class="settings-section-title">
+        <i class="fas fa-palette mr-3"></i>
+        Appearance Settings
+    </h2>
+    
+    <div class="space-y-6">
+        <!-- Theme Selection -->
+        <div class="settings-form-group">
+            <label class="settings-form-label">Theme Preference</label>
+            <p class="text-slate-400 text-sm mb-4">Choose your preferred theme for the TutorConnect interface.</p>
+            
+            <div class="theme-toggle-container">
+                <div class="flex items-center">
+                    <i class="fas fa-moon mr-3 text-slate-400"></i>
+                    <div>
+                        <div class="font-medium text-slate-200">Dark Theme</div>
+                        <div class="text-sm text-slate-400">Easy on the eyes in low light</div>
+                    </div>
+                </div>
+                
+                <label class="theme-toggle-switch">
+                    <input type="checkbox" id="theme-toggle-setting">
+                    <span class="theme-toggle-slider"></span>
+                </label>
+                
+                <div class="flex items-center">
+                    <div class="text-right">
+                        <div class="font-medium text-slate-200">Light Theme</div>
+                        <div class="text-sm text-slate-400">Clean and bright interface</div>
+                    </div>
+                    <i class="fas fa-sun ml-3 text-slate-400"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Font Size (Future Enhancement) -->
+        <div class="settings-form-group">
+            <label class="settings-form-label">Font Size</label>
+            <p class="text-slate-400 text-sm mb-3">Adjust the text size for better readability.</p>
+            <select class="settings-form-input" disabled>
+                <option>Medium (Default)</option>
+                <option>Small</option>
+                <option>Large</option>
+            </select>
+            <p class="text-slate-500 text-xs mt-2">Coming soon in a future update</p>
+        </div>
+        
+        <!-- Compact Mode (Future Enhancement) -->
+        <div class="settings-form-group">
+            <label class="settings-form-label">Interface Density</label>
+            <p class="text-slate-400 text-sm mb-3">Choose how much information to show on screen.</p>
+            <div class="flex items-center justify-between p-3 bg-slate-700 rounded-lg border border-slate-600 opacity-50">
+                <div>
+                    <div class="font-medium text-slate-200">Compact Mode</div>
+                    <div class="text-sm text-slate-400">Show more content in less space</div>
+                </div>
+                <label class="theme-toggle-switch opacity-50">
+                    <input type="checkbox" disabled>
+                    <span class="theme-toggle-slider"></span>
+                </label>
+            </div>
+            <p class="text-slate-500 text-xs mt-2">Coming soon in a future update</p>
+        </div>
+    </div>
+    
+    <div class="mt-8 pt-6 border-t border-slate-700">
+        <button type="button" onclick="saveAppearanceSettings()" class="settings-btn-primary">
+            <i class="fas fa-save mr-2"></i>
+            Save Changes
+        </button>
+    </div>
+</div>
+
+<script>
+function saveAppearanceSettings() {
+    // Show a success message
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
+    button.style.backgroundColor = '#10b981'; // green-500
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.backgroundColor = '#22d3ee'; // cyan-400
+    }, 2000);
+}
+</script>

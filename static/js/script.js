@@ -6,13 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Theme switching functionality
     const themeToggle = document.getElementById('theme-toggle');
     const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+    const themeToggleSetting = document.getElementById('theme-toggle-setting');
     const themeStylesheet = document.getElementById('theme-stylesheet');
     
     // Load saved theme preference or default to dark
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
     
-    // Theme toggle event listeners for both desktop and mobile
+    // Theme toggle event listeners for navbar (if they exist)
     function handleThemeToggle() {
         const currentTheme = getCurrentTheme();
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -26,6 +27,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (themeToggleMobile) {
         themeToggleMobile.addEventListener('click', handleThemeToggle);
+    }
+    
+    // Settings page theme toggle
+    if (themeToggleSetting) {
+        // Set initial state based on current theme
+        themeToggleSetting.checked = getCurrentTheme() === 'light';
+        
+        themeToggleSetting.addEventListener('change', function() {
+            const newTheme = this.checked ? 'light' : 'dark';
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
     }
     
     function getCurrentTheme() {
