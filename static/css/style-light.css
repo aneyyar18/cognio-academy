@@ -3,8 +3,17 @@
 /* Apply Inter font globally and set base background/text colors for light theme */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f8fafc; /* slate-50 */
-    color: #334155; /* slate-700 */
+    background-color: #f8fafc !important; /* slate-50 */
+    color: #334155 !important; /* slate-700 */
+}
+
+/* Override any hardcoded body background from inline styles */
+body.bg-slate-50 {
+    background-color: #f8fafc !important; /* slate-50 */
+}
+
+body.text-gray-800 {
+    color: #1f2937 !important; /* gray-800 */
 }
 
 /* Custom button style (mirrors .btn-primary setup) */
@@ -273,6 +282,396 @@ select.form-select {
     background-color: #0891b2 !important; /* cyan-600 */
     color: #ffffff !important; /* white */
     border-bottom: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+/* Override hardcoded Tailwind classes for light theme */
+.bg-slate-800 { background-color: #ffffff !important; } /* white */
+.bg-slate-700 { background-color: #f8fafc !important; } /* slate-50 */
+.bg-slate-600 { background-color: #f1f5f9 !important; } /* slate-100 */
+.bg-slate-900 { background-color: #f8fafc !important; } /* slate-50 */
+
+.border-slate-700 { border-color: #e2e8f0 !important; } /* slate-200 */
+.border-slate-600 { border-color: #cbd5e1 !important; } /* slate-300 */
+.border-slate-500 { border-color: #94a3b8 !important; } /* slate-400 */
+
+.text-white { color: #1f2937 !important; } /* gray-800 */
+.text-gray-200 { color: #374151 !important; } /* gray-700 */
+.text-gray-300 { color: #4b5563 !important; } /* gray-600 */
+.text-gray-400 { color: #6b7280 !important; } /* gray-500 */
+.text-slate-200 { color: #374151 !important; } /* gray-700 */
+.text-slate-300 { color: #4b5563 !important; } /* gray-600 */
+.text-slate-400 { color: #6b7280 !important; } /* gray-500 */
+
+/* Form element overrides */
+.form-input { 
+    background-color: #ffffff !important; /* white */
+    border-color: #d1d5db !important; /* gray-300 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.form-select { 
+    background-color: #ffffff !important; /* white */
+    border-color: #d1d5db !important; /* gray-300 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.form-textarea { 
+    background-color: #ffffff !important; /* white */
+    border-color: #d1d5db !important; /* gray-300 */
+    color: #374151 !important; /* gray-700 */
+}
+
+/* Button overrides */
+.btn-secondary {
+    background-color: transparent !important;
+    border-color: #0891b2 !important; /* cyan-600 */
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+.btn-secondary:hover {
+    background-color: #0891b2 !important; /* cyan-600 */
+    color: #ffffff !important; /* white */
+}
+
+/* Hover state overrides */
+.hover\\:bg-slate-600:hover { background-color: #e2e8f0 !important; } /* slate-200 */
+.hover\\:bg-slate-700:hover { background-color: #f1f5f9 !important; } /* slate-100 */
+
+/* Alert and message styling */
+.alert-success { 
+    background-color: #d1fae5 !important; /* green-100 */
+    border-color: #10b981 !important; /* emerald-500 */
+    color: #047857 !important; /* emerald-700 */
+}
+
+.alert-danger { 
+    background-color: #fee2e2 !important; /* red-100 */
+    border-color: #ef4444 !important; /* red-500 */
+    color: #b91c1c !important; /* red-700 */
+}
+
+.alert-info { 
+    background-color: #dbeafe !important; /* blue-100 */
+    border-color: #3b82f6 !important; /* blue-500 */
+    color: #1d4ed8 !important; /* blue-700 */
+}
+
+/* Navigation and header styling */
+.navbar-dark { 
+    background-color: #ffffff !important; /* white */
+    border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+.navbar-brand { 
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+.nav-link { 
+    color: #475569 !important; /* slate-600 */
+}
+
+.nav-link:hover { 
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Additional common class overrides */
+.rounded-xl { border-radius: 0.75rem !important; }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important; }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+
+/* Gradient overrides for light theme */
+.bg-gradient-to-r { 
+    background: linear-gradient(to right, #0891b2, #3b82f6) !important; /* cyan-600 to blue-500 */
+}
+
+.from-cyan-600 { 
+    --tw-gradient-from: #0891b2 !important; /* cyan-600 */
+}
+
+.to-blue-600 { 
+    --tw-gradient-to: #2563eb !important; /* blue-600 */
+}
+
+/* Icon color overrides */
+.text-cyan-400 { color: #0891b2 !important; } /* cyan-600 for better contrast */
+.text-cyan-500 { color: #0891b2 !important; } /* cyan-600 for better contrast */
+
+/* Settings page specific overrides */
+.settings-nav-item {
+    color: #4b5563 !important; /* gray-600 */
+}
+
+.settings-nav-item:hover {
+    background-color: #f1f5f9 !important; /* slate-100 */
+    color: #0891b2 !important; /* cyan-600 */
+    border-left-color: rgba(8, 145, 178, 0.3) !important;
+}
+
+.settings-nav-item.active {
+    background-color: #f1f5f9 !important; /* slate-100 */
+    color: #0891b2 !important; /* cyan-600 */
+    border-left-color: #0891b2 !important; /* cyan-600 */
+}
+
+.settings-section {
+    background-color: #ffffff !important; /* white */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.settings-section-title {
+    color: #0891b2 !important; /* cyan-600 */
+    border-bottom-color: #e2e8f0 !important; /* slate-200 */
+}
+
+.settings-form-label {
+    color: #374151 !important; /* gray-700 */
+}
+
+.settings-form-input {
+    background-color: #ffffff !important; /* white */
+    border-color: #d1d5db !important; /* gray-300 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.settings-form-input:focus {
+    border-color: #0891b2 !important; /* cyan-600 */
+    box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.2) !important;
+}
+
+.settings-btn-primary {
+    background-color: #0891b2 !important; /* cyan-600 */
+    color: #ffffff !important; /* white */
+}
+
+.settings-btn-primary:hover {
+    background-color: #0e7490 !important; /* cyan-700 */
+}
+
+.theme-toggle-container {
+    background-color: #f8fafc !important; /* slate-50 */
+    border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+.theme-toggle-slider {
+    background-color: #d1d5db !important; /* gray-300 */
+}
+
+input:checked + .theme-toggle-slider {
+    background-color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Additional text color overrides for settings pages */
+.text-slate-400 { color: #6b7280 !important; } /* gray-500 */
+.text-slate-500 { color: #6b7280 !important; } /* gray-500 */
+.text-slate-200 { color: #374151 !important; } /* gray-700 */
+
+/* Border color overrides */
+.border-slate-700 { border-color: #e2e8f0 !important; } /* slate-200 */
+.border-t { border-top-color: #e2e8f0 !important; } /* slate-200 */
+
+/* Additional background overrides */
+.bg-slate-700 { background-color: #f8fafc !important; } /* slate-50 */
+.border-slate-600 { border-color: #cbd5e1 !important; } /* slate-300 */
+
+/* Opacity overrides for disabled elements */
+.opacity-50 { opacity: 0.5 !important; }
+
+/* Discover page specific overrides */
+.discover-header {
+    background-color: #ffffff !important; /* white */
+    border-bottom: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+.discover-content {
+    background-color: #f8fafc !important; /* slate-50 */
+}
+
+.search-bar {
+    background-color: #ffffff !important; /* white */
+    border-color: #d1d5db !important; /* gray-300 */
+    color: #374151 !important; /* gray-700 */
+}
+
+.search-bar:focus {
+    border-color: #0891b2 !important; /* cyan-600 */
+    box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.3) !important;
+}
+
+.tutor-card {
+    background-color: #ffffff !important; /* white */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+    color: #374151 !important; /* gray-700 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tutor-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tutor-card h3 {
+    color: #1f2937 !important; /* gray-800 */
+}
+
+.tutor-card p {
+    color: #6b7280 !important; /* gray-500 */
+}
+
+.tag-text {
+    background-color: rgba(8, 145, 178, 0.1) !important; /* cyan-600 with opacity */
+    color: #0891b2 !important; /* cyan-600 */
+    border-color: rgba(8, 145, 178, 0.2) !important;
+}
+
+.tag-text:hover {
+    background-color: rgba(8, 145, 178, 0.2) !important;
+    color: #0e7490 !important; /* cyan-700 */
+}
+
+.filter-btn {
+    background-color: #ffffff !important; /* white */
+    color: #4b5563 !important; /* gray-600 */
+    border-color: #d1d5db !important; /* gray-300 */
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background-color: #0891b2 !important; /* cyan-600 */
+    color: #ffffff !important; /* white */
+    border-color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Empty state styling */
+.text-gray-600 { color: #4b5563 !important; } /* gray-600 */
+.text-gray-300 { color: #6b7280 !important; } /* gray-500 */
+
+/* Navbar light theme overrides */
+nav.bg-slate-900\/80 {
+    background-color: rgba(255, 255, 255, 0.95) !important; /* white with transparency */
+    backdrop-filter: blur(8px) !important;
+    border-bottom: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+/* Navbar text colors */
+nav .text-white {
+    color: #374151 !important; /* gray-700 */
+}
+
+nav .text-white:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+nav .hover\\:text-cyan-400:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Dropdown menu */
+.bg-slate-800 {
+    background-color: #ffffff !important; /* white */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.hover\\:bg-slate-700:hover {
+    background-color: #f1f5f9 !important; /* slate-100 */
+}
+
+.hover\\:bg-slate-700:hover .hover\\:text-cyan-400:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Dropdown separator */
+.border-slate-600 {
+    border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* Mobile menu button */
+.text-gray-300 {
+    color: #6b7280 !important; /* gray-500 */
+}
+
+.text-gray-300:hover {
+    color: #374151 !important; /* gray-700 */
+}
+
+/* Mobile menu */
+#mobile-menu.bg-slate-800 {
+    background-color: #ffffff !important; /* white */
+    border-top: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+#mobile-menu a.text-white {
+    color: #374151 !important; /* gray-700 */
+}
+
+#mobile-menu a.hover\\:bg-slate-700:hover {
+    background-color: #f1f5f9 !important; /* slate-100 */
+}
+
+#mobile-menu a.hover\\:text-cyan-400:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Navbar buttons */
+.bg-cyan-500 {
+    background-color: #0891b2 !important; /* cyan-600 */
+}
+
+.bg-cyan-500:hover {
+    background-color: #0e7490 !important; /* cyan-700 */
+}
+
+.border-cyan-400 {
+    border-color: #0891b2 !important; /* cyan-600 */
+}
+
+.text-cyan-400 {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+.hover\\:bg-cyan-400:hover {
+    background-color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Logout button in mobile menu */
+.bg-red-600 {
+    background-color: #dc2626 !important; /* red-600 */
+}
+
+.bg-cyan-600 {
+    background-color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Theme toggle in navbar (if present) */
+#theme-toggle, #theme-toggle-mobile {
+    color: #374151 !important; /* gray-700 */
+}
+
+#theme-toggle:hover, #theme-toggle-mobile:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Additional navbar link styling */
+nav a {
+    color: #374151 !important; /* gray-700 */
+}
+
+nav a:hover {
+    color: #0891b2 !important; /* cyan-600 */
+}
+
+/* Ensure dropdown items have proper spacing and styling */
+.group:hover .absolute {
+    background-color: #ffffff !important; /* white */
+    border: 1px solid #e2e8f0 !important; /* slate-200 */
+}
+
+.group:hover .absolute a {
+    color: #374151 !important; /* gray-700 */
+}
+
+.group:hover .absolute a:hover {
+    background-color: #f1f5f9 !important; /* slate-100 */
+    color: #0891b2 !important; /* cyan-600 */
 }
 
 /* Profile Page Specific Styling - Light Theme */
