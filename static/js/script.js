@@ -100,14 +100,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Search button functionality (if you add a search button)
-    searchInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            const query = searchInput.value.trim();
-            if (query) {
-                performSearch(query);
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
             }
-        }
-    });
+        });
+    }
 
     // Tag button functionality
     tagButtons.forEach(button => {

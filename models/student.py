@@ -17,6 +17,7 @@ class Student(User):
     study_level = db.Column(db.String(50), nullable=True)
     subjects_interested = db.Column(db.String(255), nullable=True)  # Comma-separated list
     learning_goals = db.Column(db.Text, nullable=True)
+    profile_pic = db.Column(db.String(255), nullable=True)  # Path to profile picture
     
     @classmethod
     def create(cls, email, fullname, password, timezone, dob, 

@@ -10,4 +10,4 @@ app = create_app()
 if __name__ == '__main__':
     # Debug=True allows auto-reloading and provides detailed error pages
     # Turn off debug mode in production!
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

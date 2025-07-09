@@ -321,22 +321,34 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
+        const icon = passwordMatch.querySelector('span i');
+        const textSpan = passwordMatch.querySelector('span');
         
         if (confirmPassword && password !== confirmPassword) {
             passwordMatch.classList.remove('hidden');
-            passwordMatch.querySelector('i').classList.remove('fa-check', 'text-green-400');
-            passwordMatch.querySelector('i').classList.add('fa-times', 'text-red-400');
-            passwordMatch.querySelector('span').textContent = 'Passwords do not match';
-            passwordMatch.querySelector('span').classList.remove('text-green-400');
-            passwordMatch.querySelector('span').classList.add('text-red-400');
+            if (icon) {
+                icon.classList.remove('fa-check', 'text-green-400');
+                icon.classList.add('fa-times', 'text-red-400');
+            }
+            if (textSpan) {
+                textSpan.classList.remove('text-green-400');
+                textSpan.classList.add('text-red-400');
+                // Update text content while preserving the icon
+                textSpan.innerHTML = '<i class="fas fa-times text-red-400 mr-2"></i>Passwords do not match';
+            }
             return false;
         } else if (confirmPassword && password === confirmPassword) {
             passwordMatch.classList.remove('hidden');
-            passwordMatch.querySelector('i').classList.remove('fa-times', 'text-red-400');
-            passwordMatch.querySelector('i').classList.add('fa-check', 'text-green-400');
-            passwordMatch.querySelector('span').textContent = 'Passwords match';
-            passwordMatch.querySelector('span').classList.remove('text-red-400');
-            passwordMatch.querySelector('span').classList.add('text-green-400');
+            if (icon) {
+                icon.classList.remove('fa-times', 'text-red-400');
+                icon.classList.add('fa-check', 'text-green-400');
+            }
+            if (textSpan) {
+                textSpan.classList.remove('text-red-400');
+                textSpan.classList.add('text-green-400');
+                // Update text content while preserving the icon
+                textSpan.innerHTML = '<i class="fas fa-check text-green-400 mr-2"></i>Passwords match';
+            }
             return true;
         } else {
             passwordMatch.classList.add('hidden');

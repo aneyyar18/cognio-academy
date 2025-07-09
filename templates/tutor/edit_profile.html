@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile | TutorConnect{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-3xl font-bold text-white">Edit Tutor Profile</h1>
+                <div class="flex space-x-3">
+                    <a href="{{ url_for('tutor.profile') }}" class="btn-secondary text-sm px-4 py-2">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-6">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Edit Form -->
+    <form method="POST" action="{{ url_for('tutor.edit_profile_submit') }}" enctype="multipart/form-data" class="space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Profile Picture Section -->
+            <div class="lg:col-span-1">
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center">
+                    <h3 class="text-lg font-semibold text-white mb-4">Profile Picture</h3>
+                    <div class="mb-6">
+                        <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
+                            {% if tutor.profile_pic %}
+                                <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
+                                     alt="Profile Picture" 
+                                     class="w-full h-full object-cover">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                     alt="Profile Picture" 
+                                     class="w-full h-full object-cover">
+                            {% endif %}
+                        </div>
+                        <div class="file-upload-container">
+                            <label for="profile_picture" class="btn-primary text-sm px-4 py-2 cursor-pointer">
+                                <i class="fas fa-camera mr-2"></i>Change Picture
+                            </label>
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="hidden">
+                        </div>
+                        <p class="text-gray-400 text-xs mt-2">Max size: 5MB. Formats: JPG, PNG, JPEG</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Personal Information -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-user-tie mr-3"></i>Personal Information
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label for="fullname" class="form-label">Full Name *</label>
+                                <input type="text" 
+                                       id="fullname" 
+                                       name="fullname" 
+                                       value="{{ tutor.fullname }}"
+                                       class="form-input" 
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" 
+                                       id="email" 
+                                       name="email" 
+                                       value="{{ tutor.email }}"
+                                       class="form-input" 
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" 
+                                       id="phone" 
+                                       name="phone" 
+                                       value="{{ tutor.phone if tutor.phone else '' }}"
+                                       class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone" class="form-label">Timezone *</label>
+                                <select id="timezone" name="timezone" class="form-select" required>
+                                    <option value="">Select Timezone</option>
+                                    <option value="UTC-12" {{ 'selected' if tutor.timezone == 'UTC-12' else '' }}>UTC-12</option>
+                                    <option value="UTC-11" {{ 'selected' if tutor.timezone == 'UTC-11' else '' }}>UTC-11</option>
+                                    <option value="UTC-10" {{ 'selected' if tutor.timezone == 'UTC-10' else '' }}>UTC-10</option>
+                                    <option value="UTC-9" {{ 'selected' if tutor.timezone == 'UTC-9' else '' }}>UTC-9</option>
+                                    <option value="UTC-8" {{ 'selected' if tutor.timezone == 'UTC-8' else '' }}>UTC-8</option>
+                                    <option value="UTC-7" {{ 'selected' if tutor.timezone == 'UTC-7' else '' }}>UTC-7</option>
+                                    <option value="UTC-6" {{ 'selected' if tutor.timezone == 'UTC-6' else '' }}>UTC-6</option>
+                                    <option value="UTC-5" {{ 'selected' if tutor.timezone == 'UTC-5' else '' }}>UTC-5</option>
+                                    <option value="UTC-4" {{ 'selected' if tutor.timezone == 'UTC-4' else '' }}>UTC-4</option>
+                                    <option value="UTC-3" {{ 'selected' if tutor.timezone == 'UTC-3' else '' }}>UTC-3</option>
+                                    <option value="UTC-2" {{ 'selected' if tutor.timezone == 'UTC-2' else '' }}>UTC-2</option>
+                                    <option value="UTC-1" {{ 'selected' if tutor.timezone == 'UTC-1' else '' }}>UTC-1</option>
+                                    <option value="UTC" {{ 'selected' if tutor.timezone == 'UTC' else '' }}>UTC</option>
+                                    <option value="UTC+1" {{ 'selected' if tutor.timezone == 'UTC+1' else '' }}>UTC+1</option>
+                                    <option value="UTC+2" {{ 'selected' if tutor.timezone == 'UTC+2' else '' }}>UTC+2</option>
+                                    <option value="UTC+3" {{ 'selected' if tutor.timezone == 'UTC+3' else '' }}>UTC+3</option>
+                                    <option value="UTC+4" {{ 'selected' if tutor.timezone == 'UTC+4' else '' }}>UTC+4</option>
+                                    <option value="UTC+5" {{ 'selected' if tutor.timezone == 'UTC+5' else '' }}>UTC+5</option>
+                                    <option value="UTC+6" {{ 'selected' if tutor.timezone == 'UTC+6' else '' }}>UTC+6</option>
+                                    <option value="UTC+7" {{ 'selected' if tutor.timezone == 'UTC+7' else '' }}>UTC+7</option>
+                                    <option value="UTC+8" {{ 'selected' if tutor.timezone == 'UTC+8' else '' }}>UTC+8</option>
+                                    <option value="UTC+9" {{ 'selected' if tutor.timezone == 'UTC+9' else '' }}>UTC+9</option>
+                                    <option value="UTC+10" {{ 'selected' if tutor.timezone == 'UTC+10' else '' }}>UTC+10</option>
+                                    <option value="UTC+11" {{ 'selected' if tutor.timezone == 'UTC+11' else '' }}>UTC+11</option>
+                                    <option value="UTC+12" {{ 'selected' if tutor.timezone == 'UTC+12' else '' }}>UTC+12</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-graduation-cap mr-3"></i>Professional Information
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="form-group">
+                                <label for="qualification" class="form-label">Highest Qualification *</label>
+                                <input type="text" 
+                                       id="qualification" 
+                                       name="qualification" 
+                                       value="{{ tutor.qualification }}"
+                                       class="form-input" 
+                                       placeholder="e.g., PhD in Mathematics, MSc Computer Science"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="experience" class="form-label">Years of Experience *</label>
+                                <input type="number" 
+                                       id="experience" 
+                                       name="experience" 
+                                       value="{{ tutor.experience }}"
+                                       class="form-input" 
+                                       min="0" 
+                                       step="0.1"
+                                       placeholder="e.g., 5.5"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hourly_rate" class="form-label">Hourly Rate (USD)</label>
+                                <input type="number" 
+                                       id="hourly_rate" 
+                                       name="hourly_rate" 
+                                       value="{{ tutor.hourly_rate if tutor.hourly_rate else '' }}"
+                                       class="form-input" 
+                                       min="0" 
+                                       step="0.01"
+                                       placeholder="e.g., 50.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-6">
+                            <label class="form-label">Subjects Taught *</label>
+                            <div class="mt-2 space-y-2">
+                                {% set current_subjects = tutor.subjects_taught.split(',') if tutor.subjects_taught else [] %}
+                                {% set available_subjects = ['Mathematics', 'Science', 'English', 'History', 'Computer Science', 'Physics', 'Chemistry', 'Biology', 'Art', 'Music', 'Languages', 'Literature', 'Economics', 'Psychology', 'Philosophy', 'Engineering', 'Business', 'Other'] %}
+                                
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {% for subject in available_subjects %}
+                                        <label class="flex items-center">
+                                            <input type="checkbox" 
+                                                   name="subjects[]" 
+                                                   value="{{ subject }}"
+                                                   {% if subject in current_subjects %}checked{% endif %}
+                                                   class="form-checkbox">
+                                            <span class="ml-2 text-gray-300">{{ subject }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio/About Me *</label>
+                            <textarea id="bio" 
+                                      name="bio" 
+                                      rows="6" 
+                                      class="form-textarea" 
+                                      placeholder="Tell students about yourself, your teaching philosophy, experience, and what makes you a great tutor..."
+                                      required>{{ tutor.bio if tutor.bio else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{{ url_for('tutor.profile') }}" class="btn-secondary px-6 py-3">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-primary px-6 py-3">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

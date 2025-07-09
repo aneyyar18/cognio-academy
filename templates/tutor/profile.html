@@ -13,9 +13,9 @@
                     <a href="{{ url_for('tutor.dashboard') }}" class="btn-secondary text-sm px-4 py-2">
                         <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
                     </a>
-                    <button class="btn-primary text-sm px-4 py-2" onclick="toggleEditMode()">
+                    <a href="{{ url_for('tutor.edit_profile') }}" class="btn-primary text-sm px-4 py-2">
                         <i class="fas fa-edit mr-2"></i>Edit Profile
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -230,10 +230,4 @@
     </div>
 </div>
 
-<script>
-function toggleEditMode() {
-    // This is a placeholder for future edit functionality
-    alert('Edit functionality coming soon!');
-}
-</script>
 {% endblock %}

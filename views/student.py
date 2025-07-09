@@ -45,7 +45,7 @@ def signup_submit():
             errors.append("Email is required.")
         if not password or len(password) < 8:
             errors.append("Password is required and must be at least 8 characters.")
-        if password != confirm_password:
+        if confirm_password != password:
             errors.append("Passwords do not match.")
         if not dob:
             errors.append("Date of Birth is required.")
@@ -179,11 +179,111 @@ def settings_privacy():
     return render_template('student/settings.html', user=student, active_section='privacy')
 
 
+@student_bp.route('/profile/edit')
+@login_required
+@role_required(['student'])
+def edit_profile():
+    """Show student profile edit form."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('student/edit_profile.html', student=student)
+
+
+@student_bp.route('/profile/edit/submit', methods=['POST'])
+@login_required
+@role_required(['student'])
+def edit_profile_submit():
+    """Update student profile information."""
+    student_id = session.get('user_id')
+    student = Student.query.get(student_id)
+    
+    if not student:
+        flash('Student profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    # Basic validation
+    errors = []
+    fullname = request.form.get('fullname')
+    email = request.form.get('email')
+    dob = request.form.get('dob')
+    timezone = request.form.get('timezone')
+    
+    if not fullname:
+        errors.append("Full name is required.")
+    if not email:
+        errors.append("Email is required.")
+    if not dob:
+        errors.append("Date of birth is required.")
+    if not timezone:
+        errors.append("Timezone is required.")
+    
+    if errors:
+        for error in errors:
+            flash(error, 'error')
+        return redirect(url_for('student.edit_profile'))
+    
+    try:
+        # Update profile fields
+        student.fullname = fullname
+        student.email = email
+        student.phone = request.form.get('phone')
+        student.timezone = timezone
+        student.study_level = request.form.get('study_level')
+        student.learning_goals = request.form.get('learning_goals')
+        
+        # Handle subjects interested
+        subjects = request.form.getlist('subjects[]')
+        if subjects:
+            student.subjects_interested = ','.join(subjects)
+        
+        # Handle date of birth
+        if dob:
+            from datetime import datetime
+            try:
+                student.dob = datetime.strptime(dob, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Invalid date format for date of birth.', 'error')
+                return redirect(url_for('student.edit_profile'))
+        
+        # Handle profile picture upload if provided
+        from utils.file_handling import allowed_file, save_uploaded_file
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename:
+                if allowed_file(file.filename):
+                    profile_pic_filename = save_uploaded_file(
+                        file, 
+                        current_app.config['UPLOAD_FOLDER']
+                    )
+                    if profile_pic_filename:
+                        student.profile_pic = profile_pic_filename
+                    else:
+                        flash('Error saving profile picture', 'error')
+                else:
+                    flash('Invalid file type for profile picture. Allowed: png, jpg, jpeg', 'error')
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('student.profile'))
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating student profile: {str(e)}")
+        flash('An error occurred while updating your profile. Please try again.', 'error')
+    
+    return redirect(url_for('student.edit_profile'))
+
+
 @student_bp.route('/settings/profile/update', methods=['POST'])
 @login_required
 @role_required(['student'])
 def update_profile():
-    """Update student profile information."""
+    """Update student profile information from settings page."""
     student_id = session.get('user_id')
     student = Student.query.get(student_id)
     
@@ -200,8 +300,10 @@ def update_profile():
         student.study_level = request.form.get('study_level', student.study_level)
         student.learning_goals = request.form.get('learning_goals', student.learning_goals)
         
-        # Handle profile picture upload if provided
-        # (This would require additional file handling logic)
+        # Handle subjects interested
+        subjects = request.form.getlist('subjects[]')
+        if subjects:
+            student.subjects_interested = ','.join(subjects)
         
         db.session.commit()
         flash('Profile updated successfully!', 'success')

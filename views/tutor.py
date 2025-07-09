@@ -236,11 +236,118 @@ def settings_privacy():
     return render_template('tutor/settings.html', user=tutor, active_section='privacy')
 
 
+@tutor_bp.route('/profile/edit')
+@login_required
+@role_required(['tutor'])
+def edit_profile():
+    """Show tutor profile edit form."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+        
+    return render_template('tutor/edit_profile.html', tutor=tutor)
+
+
+@tutor_bp.route('/profile/edit/submit', methods=['POST'])
+@login_required
+@role_required(['tutor'])
+def edit_profile_submit():
+    """Update tutor profile information."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    # Basic validation
+    errors = []
+    fullname = request.form.get('fullname')
+    email = request.form.get('email')
+    bio = request.form.get('bio')
+    qualification = request.form.get('qualification')
+    experience_str = request.form.get('experience')
+    subjects = request.form.getlist('subjects[]')
+    timezone = request.form.get('timezone')
+    
+    if not fullname:
+        errors.append("Full name is required.")
+    if not email:
+        errors.append("Email is required.")
+    if not bio:
+        errors.append("Bio is required.")
+    if not qualification:
+        errors.append("Qualification is required.")
+    if not experience_str:
+        errors.append("Experience is required.")
+    elif not experience_str.replace('.', '').isdigit():
+        errors.append("Experience must be a number.")
+    if not subjects:
+        errors.append("At least one subject is required.")
+    if not timezone:
+        errors.append("Timezone is required.")
+    
+    if errors:
+        for error in errors:
+            flash(error, 'error')
+        return redirect(url_for('tutor.edit_profile'))
+    
+    try:
+        # Update profile fields
+        tutor.fullname = fullname
+        tutor.email = email
+        tutor.phone = request.form.get('phone')
+        tutor.timezone = timezone
+        tutor.bio = bio
+        tutor.qualification = qualification
+        tutor.experience = float(experience_str)
+        tutor.subjects_taught = ','.join(subjects)
+        
+        # Handle hourly rate if provided
+        hourly_rate_str = request.form.get('hourly_rate')
+        if hourly_rate_str:
+            try:
+                tutor.hourly_rate = float(hourly_rate_str)
+            except ValueError:
+                flash('Invalid hourly rate format.', 'error')
+                return redirect(url_for('tutor.edit_profile'))
+        
+        # Handle profile picture upload if provided
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename:
+                if allowed_file(file.filename):
+                    profile_pic_filename = save_uploaded_file(
+                        file, 
+                        current_app.config['UPLOAD_FOLDER']
+                    )
+                    if profile_pic_filename:
+                        tutor.profile_pic = profile_pic_filename
+                    else:
+                        flash('Error saving profile picture', 'error')
+                else:
+                    flash('Invalid file type for profile picture. Allowed: png, jpg, jpeg', 'error')
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('tutor.profile'))
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating tutor profile: {str(e)}")
+        flash('An error occurred while updating your profile. Please try again.', 'error')
+    
+    return redirect(url_for('tutor.edit_profile'))
+
+
 @tutor_bp.route('/settings/profile/update', methods=['POST'])
 @login_required
 @role_required(['tutor'])
 def update_profile():
-    """Update tutor profile information."""
+    """Update tutor profile information from settings page."""
     tutor_id = session.get('user_id')
     tutor = Tutor.query.get(tutor_id)
     
@@ -255,6 +362,20 @@ def update_profile():
         tutor.phone = request.form.get('phone', tutor.phone)
         tutor.timezone = request.form.get('timezone', tutor.timezone)
         tutor.bio = request.form.get('bio', tutor.bio)
+        tutor.qualification = request.form.get('qualification', tutor.qualification)
+        
+        # Handle experience
+        experience_str = request.form.get('experience')
+        if experience_str:
+            try:
+                tutor.experience = float(experience_str)
+            except ValueError:
+                pass  # Keep existing value if invalid
+        
+        # Handle subjects
+        subjects = request.form.getlist('subjects[]')
+        if subjects:
+            tutor.subjects_taught = ','.join(subjects)
         
         # Handle hourly rate if provided
         hourly_rate_str = request.form.get('hourly_rate')
@@ -263,9 +384,6 @@ def update_profile():
                 tutor.hourly_rate = float(hourly_rate_str)
             except ValueError:
                 pass  # Keep existing rate if invalid input
-        
-        # Handle profile picture upload if provided
-        # (This would require additional file handling logic)
         
         db.session.commit()
         flash('Profile updated successfully!', 'success')
