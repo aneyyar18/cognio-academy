@@ -110,32 +110,24 @@
                             <div class="form-group md:col-span-2">
                                 <label for="timezone" class="form-label">Timezone *</label>
                                 <select id="timezone" name="timezone" class="form-select" required>
-                                    <option value="">Select Timezone</option>
-                                    <option value="UTC-12" {{ 'selected' if student.timezone == 'UTC-12' else '' }}>UTC-12</option>
-                                    <option value="UTC-11" {{ 'selected' if student.timezone == 'UTC-11' else '' }}>UTC-11</option>
-                                    <option value="UTC-10" {{ 'selected' if student.timezone == 'UTC-10' else '' }}>UTC-10</option>
-                                    <option value="UTC-9" {{ 'selected' if student.timezone == 'UTC-9' else '' }}>UTC-9</option>
-                                    <option value="UTC-8" {{ 'selected' if student.timezone == 'UTC-8' else '' }}>UTC-8</option>
-                                    <option value="UTC-7" {{ 'selected' if student.timezone == 'UTC-7' else '' }}>UTC-7</option>
-                                    <option value="UTC-6" {{ 'selected' if student.timezone == 'UTC-6' else '' }}>UTC-6</option>
-                                    <option value="UTC-5" {{ 'selected' if student.timezone == 'UTC-5' else '' }}>UTC-5</option>
-                                    <option value="UTC-4" {{ 'selected' if student.timezone == 'UTC-4' else '' }}>UTC-4</option>
-                                    <option value="UTC-3" {{ 'selected' if student.timezone == 'UTC-3' else '' }}>UTC-3</option>
-                                    <option value="UTC-2" {{ 'selected' if student.timezone == 'UTC-2' else '' }}>UTC-2</option>
-                                    <option value="UTC-1" {{ 'selected' if student.timezone == 'UTC-1' else '' }}>UTC-1</option>
-                                    <option value="UTC" {{ 'selected' if student.timezone == 'UTC' else '' }}>UTC</option>
-                                    <option value="UTC+1" {{ 'selected' if student.timezone == 'UTC+1' else '' }}>UTC+1</option>
-                                    <option value="UTC+2" {{ 'selected' if student.timezone == 'UTC+2' else '' }}>UTC+2</option>
-                                    <option value="UTC+3" {{ 'selected' if student.timezone == 'UTC+3' else '' }}>UTC+3</option>
-                                    <option value="UTC+4" {{ 'selected' if student.timezone == 'UTC+4' else '' }}>UTC+4</option>
-                                    <option value="UTC+5" {{ 'selected' if student.timezone == 'UTC+5' else '' }}>UTC+5</option>
-                                    <option value="UTC+6" {{ 'selected' if student.timezone == 'UTC+6' else '' }}>UTC+6</option>
-                                    <option value="UTC+7" {{ 'selected' if student.timezone == 'UTC+7' else '' }}>UTC+7</option>
-                                    <option value="UTC+8" {{ 'selected' if student.timezone == 'UTC+8' else '' }}>UTC+8</option>
-                                    <option value="UTC+9" {{ 'selected' if student.timezone == 'UTC+9' else '' }}>UTC+9</option>
-                                    <option value="UTC+10" {{ 'selected' if student.timezone == 'UTC+10' else '' }}>UTC+10</option>
-                                    <option value="UTC+11" {{ 'selected' if student.timezone == 'UTC+11' else '' }}>UTC+11</option>
-                                    <option value="UTC+12" {{ 'selected' if student.timezone == 'UTC+12' else '' }}>UTC+12</option>
+                                    <option value="" disabled>Select your timezone</option>
+                                    <option value="America/Los_Angeles" {{ 'selected' if student.timezone == 'America/Los_Angeles' else '' }}>(GMT-08:00) Pacific Time (US & Canada)</option>
+                                    <option value="America/Denver" {{ 'selected' if student.timezone == 'America/Denver' else '' }}>(GMT-07:00) Mountain Time (US & Canada)</option>
+                                    <option value="America/Chicago" {{ 'selected' if student.timezone == 'America/Chicago' else '' }}>(GMT-06:00) Central Time (US & Canada)</option>
+                                    <option value="America/New_York" {{ 'selected' if student.timezone == 'America/New_York' else '' }}>(GMT-05:00) Eastern Time (US & Canada)</option>
+                                    <option value="Europe/London" {{ 'selected' if student.timezone == 'Europe/London' else '' }}>(GMT+00:00) London</option>
+                                    <option value="Europe/Berlin" {{ 'selected' if student.timezone == 'Europe/Berlin' else '' }}>(GMT+01:00) Berlin</option>
+                                    <option value="Europe/Athens" {{ 'selected' if student.timezone == 'Europe/Athens' else '' }}>(GMT+02:00) Athens</option>
+                                    <option value="Europe/Moscow" {{ 'selected' if student.timezone == 'Europe/Moscow' else '' }}>(GMT+03:00) Moscow</option>
+                                    <option value="Asia/Dubai" {{ 'selected' if student.timezone == 'Asia/Dubai' else '' }}>(GMT+04:00) Dubai</option>
+                                    <option value="Asia/Karachi" {{ 'selected' if student.timezone == 'Asia/Karachi' else '' }}>(GMT+05:00) Karachi</option>
+                                    <option value="Asia/Kolkata" {{ 'selected' if student.timezone == 'Asia/Kolkata' else '' }}>(GMT+05:30) Mumbai, Kolkata, New Delhi</option>
+                                    <option value="Asia/Dhaka" {{ 'selected' if student.timezone == 'Asia/Dhaka' else '' }}>(GMT+06:00) Dhaka</option>
+                                    <option value="Asia/Bangkok" {{ 'selected' if student.timezone == 'Asia/Bangkok' else '' }}>(GMT+07:00) Bangkok</option>
+                                    <option value="Asia/Shanghai" {{ 'selected' if student.timezone == 'Asia/Shanghai' else '' }}>(GMT+08:00) Beijing, Shanghai</option>
+                                    <option value="Asia/Tokyo" {{ 'selected' if student.timezone == 'Asia/Tokyo' else '' }}>(GMT+09:00) Tokyo</option>
+                                    <option value="Australia/Sydney" {{ 'selected' if student.timezone == 'Australia/Sydney' else '' }}>(GMT+10:00) Sydney</option>
+                                    <option value="Pacific/Auckland" {{ 'selected' if student.timezone == 'Pacific/Auckland' else '' }}>(GMT+12:00) Auckland</option>
                                 </select>
                             </div>
                         </div>
