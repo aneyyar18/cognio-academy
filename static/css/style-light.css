@@ -893,3 +893,129 @@ nav a:hover {
         background-position: -200% 0;
     }
 }
+
+/* Home header section - Light theme overrides */
+header#home {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important; /* Clean light gradient */
+    border-bottom: 1px solid rgba(8, 145, 178, 0.1) !important;
+}
+
+/* Remove the dark gradient overlay */
+header#home .bg-gradient-to-t {
+    background: transparent !important; /* Remove dark gradient overlay */
+}
+
+/* Header text styling for light theme */
+header#home h1 {
+    color: #1f2937 !important; /* gray-800 for main heading */
+}
+
+header#home h1 .text-cyan-400 {
+    color: #0891b2 !important; /* cyan-600 for accent text */
+}
+
+header#home p {
+    color: #4b5563 !important; /* gray-600 for subtitle */
+}
+
+/* Enhanced CTA Buttons for Home Header */
+header#home .btn-primary {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 1.125rem !important; /* text-lg */
+    padding: 0.875rem 2rem !important; /* py-3.5 px-8 */
+    border-radius: 0.75rem !important; /* rounded-xl */
+    border: none !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.3) !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    letter-spacing: 0.025em !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+header#home .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+header#home .btn-primary:hover::before {
+    left: 100%;
+}
+
+header#home .btn-primary:hover {
+    background: linear-gradient(135deg, #0e7490 0%, #155e75 100%) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(8, 145, 178, 0.4) !important;
+}
+
+header#home .btn-secondary {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #0891b2 !important;
+    font-weight: 600 !important;
+    font-size: 1.125rem !important; /* text-lg */
+    padding: 0.875rem 2rem !important; /* py-3.5 px-8 */
+    border-radius: 0.75rem !important; /* rounded-xl */
+    border: 2px solid #0891b2 !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.15) !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    letter-spacing: 0.025em !important;
+    backdrop-filter: blur(10px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+header#home .btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+header#home .btn-secondary:hover::before {
+    left: 100%;
+}
+
+header#home .btn-secondary:hover {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(8, 145, 178, 0.3) !important;
+    border-color: #0e7490 !important;
+}
+
+/* Button container spacing */
+header#home .space-x-4 {
+    gap: 1.5rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+
+/* Mobile button adjustments */
+@media (max-width: 768px) {
+    header#home .btn-primary,
+    header#home .btn-secondary {
+        font-size: 1rem !important;
+        padding: 0.75rem 1.5rem !important;
+        margin: 0.5rem !important;
+    }
+    
+    header#home .space-x-4 {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+}
