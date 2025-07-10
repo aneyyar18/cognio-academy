@@ -11,7 +11,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 SECRET_KEY = 'change_this_later'
 
 # Database configuration
-SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "SqliteDb/TutorConnect.db")}'
+#SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "SqliteDb/TutorConnect.db")}'
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'mysql+mysqlconnector://cognio_admin:admin18@localhost:3306/cognio')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 SQLALCHEMY_ECHO = True
 

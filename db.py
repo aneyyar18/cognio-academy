@@ -17,6 +17,8 @@ def init_db(app):
             from models.user import User
             from models.student import Student
             from models.tutor import Tutor
+            from models.message import Message
+            from models.admin import Admin
             
             # Create all tables if they don't exist
             db.create_all()
