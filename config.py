@@ -12,6 +12,10 @@ SECRET_KEY = 'change_this_later'
 
 # Database configuration
 #SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "SqliteDb/TutorConnect.db")}'
+DB_USER = os.environ.get('DB_USER', 'cognio_admin')
+DB_PASSWORD = os.environ.get('DB_PASSWORD', 'admin18') 
+DB_INSTANCE = os.environ.get('DB_INSTANCE', 'cognio-db')
+SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_INSTANCE}/cognio-db'
 SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'mysql+mysqlconnector://cognio_admin:admin18@localhost:3306/cognio')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 SQLALCHEMY_ECHO = True

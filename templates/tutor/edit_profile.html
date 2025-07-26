@@ -41,20 +41,20 @@
                     <div class="mb-6">
                         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
                             {% if tutor.profile_pic %}
-                                <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
+                                <img id="profile_preview" src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
                                      alt="Profile Picture" 
                                      class="w-full h-full object-cover">
                             {% else %}
-                                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                <img id="profile_preview" src="{{ url_for('static', filename='images/default-avatar.png') }}" 
                                      alt="Profile Picture" 
                                      class="w-full h-full object-cover">
                             {% endif %}
                         </div>
                         <div class="file-upload-container">
                             <label for="profile_picture" class="btn-primary text-sm px-4 py-2 cursor-pointer">
-                                <i class="fas fa-camera mr-2"></i>Change Picture
+                                Change Picture
                             </label>
-                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="hidden">
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
                         </div>
                         <p class="text-gray-400 text-xs mt-2">Max size: 5MB. Formats: JPG, PNG, JPEG</p>
                     </div>
@@ -215,4 +215,18 @@
         </div>
     </form>
 </div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('profile_preview').src = e.target.result;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 {% endblock %}

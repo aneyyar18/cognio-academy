@@ -2,6 +2,9 @@
 Main application entry point for TutorConnect.
 """
 from factory import create_app
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # Create the application
 app = create_app()
