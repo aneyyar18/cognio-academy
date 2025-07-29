@@ -3,6 +3,7 @@ Tutor model for TutorConnect application.
 """
 import decimal
 from enum import Enum
+from flask import url_for, current_app
 from db import db
 from models.user import User, UserRole
 
@@ -30,6 +31,14 @@ class Tutor(User):
     bio = db.Column(db.Text, nullable=False)
     hourly_rate = db.Column(db.Numeric(10, 2), nullable=True)  # Decimal field for currency
     profile_pic = db.Column(db.String(255), nullable=True)  # Path to profile picture
+    
+    @property
+    def profile_picture_url(self):
+        """Generate the full URL for the profile picture using config directory."""
+        if self.profile_pic:
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', 'static/uploads/profile_pics')
+            return url_for('static', filename=f'{upload_folder.replace("static/", "")}/{self.profile_pic}')
+        return None
     
     @classmethod
     def create(cls, email, fullname, password, timezone, qualification, experience, subjects_taught, bio,

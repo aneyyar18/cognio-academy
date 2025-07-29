@@ -2,6 +2,7 @@
 Student model for TutorConnect application.
 """
 import datetime
+from flask import url_for, current_app
 from db import db
 from models.user import User, UserRole
 
@@ -18,6 +19,14 @@ class Student(User):
     subjects_interested = db.Column(db.String(255), nullable=True)  # Comma-separated list
     learning_goals = db.Column(db.Text, nullable=True)
     profile_pic = db.Column(db.String(255), nullable=True)  # Path to profile picture
+    
+    @property
+    def profile_picture_url(self):
+        """Generate the full URL for the profile picture using config directory."""
+        if self.profile_pic:
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', 'static/uploads/profile_pics')
+            return url_for('static', filename=f'{upload_folder.replace("static/", "")}/{self.profile_pic}')
+        return None
     
     @classmethod
     def create(cls, email, fullname, password, timezone, dob, 

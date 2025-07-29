@@ -2,6 +2,7 @@
 Admin model for TutorConnect application.
 """
 import datetime
+from flask import url_for, current_app
 from db import db
 from models.user import User, UserRole
 
@@ -16,9 +17,18 @@ class Admin(User):
     admin_level = db.Column(db.String(20), nullable=False, default='standard')  # standard, super
     permissions = db.Column(db.String(500), nullable=True)  # JSON string of permissions
     last_action = db.Column(db.DateTime, nullable=True)  # Track last admin action
+    profile_pic = db.Column(db.String(255), nullable=True)  # Path to profile picture
+    
+    @property
+    def profile_picture_url(self):
+        """Generate the full URL for the profile picture using config directory."""
+        if self.profile_pic:
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', 'static/uploads/profile_pics')
+            return url_for('static', filename=f'{upload_folder.replace("static/", "")}/{self.profile_pic}')
+        return None
     
     @classmethod
-    def create(cls, email, fullname, password, timezone, phone=None, admin_level='standard', permissions=None):
+    def create(cls, email, fullname, password, timezone, phone=None, admin_level='standard', permissions=None, profile_pic=None):
         """
         Create a new admin user.
         
@@ -30,6 +40,7 @@ class Admin(User):
             phone (str, optional): Phone number
             admin_level (str): Admin level (standard, super)
             permissions (str, optional): JSON string of permissions
+            profile_pic (str, optional): Path to profile picture
             
         Returns:
             Admin: The newly created admin object
@@ -40,7 +51,8 @@ class Admin(User):
             timezone=timezone,
             phone=phone,
             admin_level=admin_level,
-            permissions=permissions
+            permissions=permissions,
+            profile_pic=profile_pic
         )
         admin.password = password  # This will hash the password
         

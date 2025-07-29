@@ -40,15 +40,9 @@
                     <h3 class="text-lg font-semibold text-white mb-4">Profile Picture</h3>
                     <div class="mb-6">
                         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
-                            {% if tutor.profile_pic %}
-                                <img id="profile_preview" src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
-                                     alt="Profile Picture" 
-                                     class="w-full h-full object-cover">
-                            {% else %}
-                                <img id="profile_preview" src="{{ url_for('static', filename='images/default-avatar.png') }}" 
-                                     alt="Profile Picture" 
-                                     class="w-full h-full object-cover">
-                            {% endif %}
+                            <img id="profile_preview" src="{{ tutor.profile_picture_url or url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="Profile Picture" 
+                                 class="w-full h-full object-cover">
                         </div>
                         <div class="file-upload-container">
                             <label for="profile_picture" class="btn-primary text-sm px-4 py-2 cursor-pointer">

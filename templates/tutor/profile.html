@@ -29,15 +29,9 @@
                 <div class="mb-6">
                     <div class="relative inline-block">
                         <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 border-4 border-cyan-400 overflow-hidden">
-                            {% if tutor.profile_pic %}
-                                <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" 
-                                     alt="{{ tutor.fullname }}" 
-                                     class="w-full h-full object-cover">
-                            {% else %}
-                                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
-                                     alt="Default Profile" 
-                                     class="w-full h-full object-cover">
-                            {% endif %}
+                            <img src="{{ tutor.profile_picture_url or url_for('static', filename='images/default-avatar.png') }}" 
+                                 alt="{{ tutor.fullname }}" 
+                                 class="w-full h-full object-cover">
                         </div>
 
                     </div>

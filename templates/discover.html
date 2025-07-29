@@ -196,11 +196,7 @@
             {% if tutors %}
                 {% for tutor in tutors %}
                 <div class="tutor-card" onclick="window.location.href='{{ url_for('main.tutor_detail', tutor_id=tutor.id) }}'">
-                    {% if tutor.profile_pic %}
-                        <img src="{{ url_for('static', filename='uploads/profile_pics/' + tutor.profile_pic) }}" alt="{{ tutor.fullname }}">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="{{ tutor.fullname }}">
-                    {% endif %}
+                    <img src="{{ tutor.profile_picture_url or url_for('static', filename='images/default-avatar.png') }}" alt="{{ tutor.fullname }}">
                     <div class="flex-1">
                         <h3>{{ tutor.fullname }}</h3>
                         <div class="rating-container">

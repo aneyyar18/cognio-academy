@@ -136,8 +136,8 @@
                 </div>
                 <div class="dashboard-card-body text-center">
                     <div class="mb-4">
-                        {% if tutor.profile_pic %}
-                            <img src="{{ tutor.profile_pic }}" alt="{{ tutor.fullname }}" 
+                        {% if tutor.profile_picture_url %}
+                            <img src="{{ tutor.profile_picture_url }}" alt="{{ tutor.fullname }}" 
                                  class="w-24 h-24 rounded-full object-cover mx-auto border-4 border-cyan-400">
                         {% else %}
                             <div class="w-24 h-24 bg-slate-600 rounded-full flex items-center justify-center mx-auto border-4 border-cyan-400">

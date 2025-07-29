@@ -11,6 +11,7 @@ from models.admin import Admin
 from models.tutor import Tutor, TutorStatus
 from models.student import Student
 from auth import login_user, login_required, role_required
+from utils.file_handling import allowed_file, save_uploaded_file
 
 # Create a Blueprint for admin routes
 admin_bp = Blueprint('admin', __name__)
@@ -189,6 +190,46 @@ def settings_appearance():
         return redirect(url_for('main.index'))
         
     return render_template('admin/settings.html', user=admin, active_section='appearance')
+
+@admin_bp.route('/settings/profile/update', methods=['POST'])
+@login_required
+@role_required(['admin'])
+def update_profile():
+    """Update admin profile information."""
+    admin_id = session.get('user_id')
+    admin = Admin.query.get(admin_id)
+    
+    if not admin:
+        flash('Admin profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    try:
+        # Handle profile picture upload if provided
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename:
+                if allowed_file(file.filename):
+                    profile_pic_filename = save_uploaded_file(
+                        file, 
+                        current_app.config['UPLOAD_FOLDER']
+                    )
+                    if profile_pic_filename:
+                        admin.profile_pic = profile_pic_filename
+                    else:
+                        flash('Error saving profile picture', 'error')
+                else:
+                    flash('Invalid file type for profile picture. Allowed: png, jpg, jpeg', 'error')
+        
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('admin.settings'))
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating admin profile: {str(e)}")
+        flash('An error occurred while updating your profile. Please try again.', 'error')
+    
+    return redirect(url_for('admin.settings'))
 
 @admin_bp.route('/logout')
 @login_required
