@@ -9,21 +9,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" id="theme-stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-light.css') }}" id="theme-stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/form-elements.css') }}">
     <style>
         /* Apply Inter font globally */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* slate-900 as base dark background */
+            background-color: #f8fafc; /* slate-50 as base light background */
         }
         /* Custom gradient for hero or accents */
         .gradient-accent {
-            background: linear-gradient(90deg, #22d3ee 0%, #67e8f9 100%); /* cyan-500 to cyan-300 */
+            background: linear-gradient(90deg, #0891b2 0%, #3b82f6 100%); /* cyan-600 to blue-500 */
         }
         /* Custom text gradient for logo */
         .logo-gradient {
-            background: linear-gradient(90deg, #67e8f9 0%, #ffffff 100%); /* cyan-300 to white */
+            background: linear-gradient(90deg, #0891b2 0%, #1f2937 100%); /* cyan-600 to gray-800 */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -31,28 +31,28 @@
         }
         /* Custom button style */
         .btn-primary {
-            @apply bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1;
+            @apply bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1;
         }
         .btn-secondary {
-            @apply bg-transparent border-2 border-cyan-400 hover:bg-cyan-400 text-cyan-400 hover:text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+            @apply bg-transparent border-2 border-cyan-600 hover:bg-cyan-600 text-cyan-600 hover:text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out;
         }
         /* Form styles */
         .form-input, .form-select, .form-textarea {
-            @apply bg-slate-700 border border-slate-600 rounded-md text-white py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent;
+            @apply bg-white border border-gray-300 rounded-md text-gray-700 py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent;
         }
         .form-checkbox {
-            @apply rounded border-slate-600 text-cyan-500 focus:ring-cyan-500 h-4 w-4;
+            @apply rounded border-gray-300 text-cyan-600 focus:ring-cyan-600 h-4 w-4;
         }
         .fieldset-group {
-            @apply rounded-lg border border-slate-600 p-6;
+            @apply rounded-lg border border-gray-300 p-6;
         }
         .fieldset-legend {
-            @apply text-lg font-medium text-cyan-400 px-2;
+            @apply text-lg font-medium text-cyan-600 px-2;
         }
     </style>
     {% block head %}{% endblock %}
 </head>
-<body class="text-gray-200 flex flex-col min-h-screen">
+<body class="text-gray-800 bg-slate-50 flex flex-col min-h-screen">
 
 {% block navbar %}
     {% set active_page = active_page|default('home') %}

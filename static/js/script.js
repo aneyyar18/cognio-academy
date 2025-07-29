@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggleSetting = document.getElementById('theme-toggle-setting');
     const themeStylesheet = document.getElementById('theme-stylesheet');
     
-    // Load saved theme preference or default to dark
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    // Load saved theme preference or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
     
     // Theme toggle event listeners for navbar (if they exist)
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (themeStylesheet) {
             return themeStylesheet.href.includes('style-light.css') ? 'light' : 'dark';
         }
-        return 'dark';
+        return 'light';
     }
     
     function setTheme(theme) {
