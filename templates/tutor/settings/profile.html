@@ -4,6 +4,8 @@
         Profile Settings
     </h2>
     
+    
+    
     <form method="POST" action="{{ url_for('tutor.update_profile') }}" enctype="multipart/form-data">
         <div class="space-y-6">
             <!-- Profile Picture -->
@@ -15,7 +17,7 @@
                              alt="Profile Picture" 
                              class="profile-picture">
                         <button type="button" class="camera-button" onclick="document.getElementById('profile-pic-input').click()">
-                            <i class="fas fa-camera"></i>
+                            <i class="fas fa-pencil"></i>
                         </button>
                     </div>
                     <div>
@@ -106,3 +108,12 @@
         </div>
     </form>
 </div>
+<script>
+document.getElementById('profile-pic-input').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const img = document.querySelector('.profile-picture');
+        img.src = URL.createObjectURL(file);
+    }
+});
+</script>
