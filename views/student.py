@@ -9,6 +9,8 @@ from sqlalchemy.exc import IntegrityError
 from db import db
 from models.student import Student
 from auth import login_user, login_required, role_required
+from utils.file_handling import allowed_file, save_uploaded_file
+
 
 # Create a Blueprint for student routes
 student_bp = Blueprint('student', __name__)
@@ -305,6 +307,25 @@ def update_profile():
         if subjects:
             student.subjects_interested = ','.join(subjects)
         
+        # Handle profile picture upload if provided
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename and file.filename != '':
+                # Reset file pointer to beginning
+                file.seek(0)
+                if allowed_file(file.filename):
+                    profile_pic_filename = save_uploaded_file(
+                        file, 
+                        current_app.config['UPLOAD_FOLDER']
+                    )
+                    if profile_pic_filename:
+                        student.profile_pic = profile_pic_filename
+                        flash('Profile picture updated successfully!', 'success')
+                    else:
+                        flash('Error saving profile picture', 'error')
+                else:
+                    flash('Invalid file type for profile picture. Allowed: png, jpg, jpeg', 'error')
+
         db.session.commit()
         flash('Profile updated successfully!', 'success')
         

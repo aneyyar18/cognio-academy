@@ -91,3 +91,12 @@
         </div>
     </form>
 </div>
+<script> 
+document.getElementById('profile-pic-input').addEventListener('change', function(event) { 
+    const file = event.target.files[0]; 
+    if (file) { 
+        const img = document.querySelector('.profile-picture'); 
+        img.src = URL.createObjectURL(file); 
+    } 
+}); 
+</script> 
