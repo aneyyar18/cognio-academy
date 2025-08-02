@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Configuration for file uploads
-UPLOAD_FOLDER = 'static/uploads/profile_pics'
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'static/uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # Secret key for session management (change this in production!)
@@ -14,9 +14,9 @@ SECRET_KEY = 'change_this_later'
 #SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "SqliteDb/TutorConnect.db")}'
 DB_USER = os.environ.get('DB_USER', 'cognio_admin')
 DB_PASSWORD = os.environ.get('DB_PASSWORD', 'admin18') 
-DB_INSTANCE = os.environ.get('DB_INSTANCE', 'cognio-db')
-SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_INSTANCE}/cognio-db'
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'mysql+mysqlconnector://cognio_admin:admin18@localhost:3306/cognio')
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:3306/cognio'
+#SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'mysql+mysqlconnector://cognio_admin:admin18@localhost:3306/cognio')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 SQLALCHEMY_ECHO = True
 
