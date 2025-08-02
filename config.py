@@ -18,7 +18,7 @@ DB_HOST = os.environ.get('DB_HOST', 'localhost')
 SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:3306/cognio'
 #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'mysql+mysqlconnector://cognio_admin:admin18@localhost:3306/cognio')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', True)
 
 # Authentication settings
 AUTH_TOKEN_EXPIRY = 86400  # 24 hours in seconds
