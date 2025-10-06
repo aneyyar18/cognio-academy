@@ -28,14 +28,22 @@ def features():
     return render_template('features.html')
 
 
-@main_bp.route('/discover')
-def discover():
-    """Renders the discover page for finding tutors."""
+@main_bp.route('/tutorsearch')
+def tutorsearch():
+    """Renders the tutor search page for finding tutors."""
     from models.tutor import Tutor
+    from models.availability import TutorAvailability, DayOfWeek
+    from datetime import time
     
     # Get search and filter parameters
     search = request.args.get('search', '')
     subject_filter = request.args.get('subject', '')
+    min_price = request.args.get('min_price', type=int)
+    max_price = request.args.get('max_price', type=int)
+    min_rating = request.args.get('min_rating', type=float)
+    availability_day = request.args.get('availability_day', '')
+    availability_start = request.args.get('availability_start', '')
+    availability_end = request.args.get('availability_end', '')
     
     # Build query for tutors
     query = Tutor.query.filter(Tutor.is_active == True)
@@ -51,23 +59,75 @@ def discover():
         )
     
     # Apply subject filter
-    if subject_filter and subject_filter != 'All Subjects':
+    if subject_filter and subject_filter not in ['', 'All Subjects']:
         query = query.filter(Tutor.subjects_taught.ilike(f'%{subject_filter}%'))
     
-    # Get all tutors ordered by creation date (newest first)
-    tutors = query.order_by(Tutor.created_at.desc()).all()
+    # Apply price filter
+    if min_price is not None:
+        query = query.filter(Tutor.hourly_rate >= min_price)
+    if max_price is not None:
+        query = query.filter(Tutor.hourly_rate <= max_price)
     
-    # Get unique subjects for filter buttons
+    # Apply rating filter
+    if min_rating is not None:
+        query = query.filter(Tutor.rating >= min_rating)
+    
+    # Apply availability filter
+    if availability_day and availability_start and availability_end:
+        try:
+            # Convert day to enum
+            day_enum = DayOfWeek[availability_day.upper()]
+            start_hour, start_min = map(int, availability_start.split(':'))
+            end_hour, end_min = map(int, availability_end.split(':'))
+            start_time_obj = time(start_hour, start_min)
+            end_time_obj = time(end_hour, end_min)
+            
+            # Find tutors with availability that overlaps the requested time
+            available_tutor_ids = db.session.query(TutorAvailability.tutor_id).filter(
+                TutorAvailability.day_of_week == day_enum,
+                TutorAvailability.start_time <= start_time_obj,
+                TutorAvailability.end_time >= end_time_obj,
+                TutorAvailability.is_available == True
+            ).distinct().all()
+            
+            if available_tutor_ids:
+                tutor_ids = [tid[0] for tid in available_tutor_ids]
+                query = query.filter(Tutor.id.in_(tutor_ids))
+            else:
+                # No tutors available at this time
+                query = query.filter(db.false())
+                
+        except (ValueError, KeyError):
+            # Invalid time format or day, ignore availability filter
+            pass
+    
+    # Get all tutors ordered by rating (desc) then creation date (newest first)
+    tutors = query.order_by(Tutor.rating.desc(), Tutor.created_at.desc()).all()
+    
+    # Get predefined subjects list for dropdown
+    predefined_subjects = [
+        'Mathematics', 'Physics', 'Chemistry', 'Biology', 'English',
+        'History', 'Geography', 'Computer Science', 'Economics',
+        'Psychology', 'Statistics', 'Calculus', 'Algebra', 'Geometry',
+        'French', 'Spanish', 'German', 'Art', 'Music', 'Philosophy'
+    ]
+    
+    # Get unique subjects from current tutors to add to predefined list
     all_tutors = Tutor.query.filter(Tutor.is_active == True).all()
-    subjects = set()
+    current_subjects = set()
     for tutor in all_tutors:
         if tutor.subjects_taught:
             for subject in tutor.subjects_taught.split(','):
-                subjects.add(subject.strip())
-    subjects = sorted(list(subjects))
+                current_subjects.add(subject.strip())
     
-    return render_template('discover.html', tutors=tutors, subjects=subjects, 
-                         current_search=search, current_subject=subject_filter)
+    # Combine and sort all subjects
+    all_subjects = sorted(list(set(predefined_subjects + list(current_subjects))))
+    
+    return render_template('tutorsearch.html', tutors=tutors, subjects=all_subjects,
+                         current_search=search, current_subject=subject_filter,
+                         current_min_price=min_price, current_max_price=max_price,
+                         current_min_rating=min_rating, current_availability_day=availability_day,
+                         current_availability_start=availability_start, current_availability_end=availability_end)
 
 
 @main_bp.route('/tutor/<int:tutor_id>')
@@ -80,7 +140,7 @@ def tutor_detail(tutor_id):
     # Check if tutor is active
     if not tutor.is_active:
         flash('This tutor profile is not available.', 'error')
-        return redirect(url_for('main.discover'))
+        return redirect(url_for('main.tutorsearch'))
     
     return render_template('tutor_detail.html', tutor=tutor)
 
@@ -104,13 +164,13 @@ def send_message():
     # Validation
     if not all([tutor_id, subject, message_content]):
         flash('All fields are required.', 'error')
-        return redirect(request.referrer or url_for('main.discover'))
+        return redirect(request.referrer or url_for('main.tutorsearch'))
     
     # Verify tutor exists and is active
     tutor = Tutor.query.get(tutor_id)
     if not tutor or not tutor.is_active:
         flash('Tutor not found or not available.', 'error')
-        return redirect(url_for('main.discover'))
+        return redirect(url_for('main.tutorsearch'))
     
     try:
         # Create the message

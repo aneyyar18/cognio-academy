@@ -31,6 +31,7 @@ class Tutor(User):
     bio = db.Column(db.Text, nullable=False)
     hourly_rate = db.Column(db.Numeric(10, 2), nullable=True)  # Decimal field for currency
     profile_pic = db.Column(db.String(255), nullable=True)  # Path to profile picture
+    rating = db.Column(db.Float, nullable=True, default=0.0)  # Average rating (0.0 to 5.0)
     
     @property
     def profile_picture_url(self):
@@ -42,7 +43,7 @@ class Tutor(User):
     
     @classmethod
     def create(cls, email, fullname, password, timezone, qualification, experience, subjects_taught, bio,
-               phone=None, hourly_rate=None, profile_pic=None):
+               phone=None, hourly_rate=None, profile_pic=None, rating=0.0):
         """
         Create a new tutor user.
         
@@ -58,6 +59,7 @@ class Tutor(User):
             phone (str, optional): Phone number
             hourly_rate (float, optional): Hourly rate
             profile_pic (str, optional): Path to profile picture
+            rating (float, optional): Average rating (0.0-5.0)
             
         Returns:
             Tutor: The newly created tutor object
@@ -72,7 +74,8 @@ class Tutor(User):
             subjects_taught=','.join(subjects_taught) if isinstance(subjects_taught, list) else subjects_taught,
             bio=bio,
             hourly_rate=decimal.Decimal(str(hourly_rate)) if hourly_rate else None,
-            profile_pic=profile_pic
+            profile_pic=profile_pic,
+            rating=float(rating) if rating is not None else 0.0
         )
         tutor.password = password  # This will hash the password
         
@@ -91,7 +94,8 @@ class Tutor(User):
             'subjects_taught': self.subjects_taught.split(',') if self.subjects_taught else [],
             'bio': self.bio,
             'hourly_rate': float(self.hourly_rate) if self.hourly_rate else None,
-            'profile_pic': self.profile_pic
+            'profile_pic': self.profile_pic,
+            'rating': self.rating
         }
         return {**base_dict, **tutor_dict}
     

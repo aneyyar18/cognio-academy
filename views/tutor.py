@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from db import db
 from models.tutor import Tutor
+from models.availability import TutorAvailability, DayOfWeek
 from auth import login_user, login_required, role_required
 from utils.file_handling import allowed_file, save_uploaded_file
 
@@ -221,6 +222,40 @@ def settings_notifications():
     return render_template('tutor/settings.html', user=tutor, active_section='notifications')
 
 
+@tutor_bp.route('/settings/availability')
+@login_required
+@role_required(['tutor'])
+def settings_availability():
+    """Tutor settings page - Availability section."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    # Get current availability and convert to local timezone
+    availability_slots = TutorAvailability.get_tutor_availability(tutor_id)
+    availability = {}
+    
+    if availability_slots and tutor.timezone:
+        for day, slots in availability_slots.items():
+            day_name = day.name.lower()
+            availability[day_name] = []
+            for slot in slots:
+                local_start, local_end = slot.get_local_times(tutor.timezone)
+                availability[day_name].append({
+                    'start_time_local': local_start.strftime('%H:%M'),
+                    'end_time_local': local_end.strftime('%H:%M'),
+                    'is_available': slot.is_available
+                })
+        
+    return render_template('tutor/settings.html', 
+                         user=tutor, 
+                         active_section='availability',
+                         availability=availability)
+
+
 @tutor_bp.route('/settings/privacy')
 @login_required
 @role_required(['tutor'])
@@ -410,6 +445,61 @@ def update_profile():
         flash('An error occurred while updating your profile. Please try again.', 'error')
     
     return redirect(url_for('tutor.settings'))
+
+
+@tutor_bp.route('/settings/availability/update', methods=['POST'])
+@login_required
+@role_required(['tutor'])
+def update_availability():
+    """Update tutor availability settings."""
+    tutor_id = session.get('user_id')
+    tutor = Tutor.query.get(tutor_id)
+    
+    if not tutor:
+        flash('Tutor profile not found.', 'error')
+        return redirect(url_for('main.index'))
+    
+    if not tutor.timezone:
+        flash('Please set your timezone in profile settings before setting availability.', 'error')
+        return redirect(url_for('tutor.settings_availability'))
+    
+    try:
+        # Parse availability data from form
+        availability_data = {}
+        days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        
+        for day in days:
+            enabled_key = f'{day}-enabled'
+            if enabled_key in request.form:  # Day is enabled
+                start_times = request.form.getlist(f'{day}-start-time[]')
+                end_times = request.form.getlist(f'{day}-end-time[]')
+                
+                if start_times and end_times and len(start_times) == len(end_times):
+                    availability_data[day] = []
+                    for start_time, end_time in zip(start_times, end_times):
+                        # Validate time format and logic
+                        if start_time and end_time and start_time < end_time:
+                            availability_data[day].append({
+                                'start_time': start_time,
+                                'end_time': end_time,
+                                'is_available': True
+                            })
+        
+        # Update availability using the model method
+        TutorAvailability.update_tutor_availability(
+            tutor_id=tutor_id,
+            availability_data=availability_data,
+            tutor_timezone=tutor.timezone
+        )
+        
+        flash('Availability updated successfully!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error updating availability: {str(e)}")
+        flash('An error occurred while updating your availability. Please try again.', 'error')
+    
+    return redirect(url_for('tutor.settings_availability'))
 
 
 @tutor_bp.route('/messages')

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Settings - TutorConnect{% endblock %}
+{% block title %}Settings - Cognio Academy{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-6 py-8 flex-grow">
@@ -29,6 +29,12 @@
                            data-section="notifications">
                             <i class="fas fa-bell mr-3"></i>
                             Notifications
+                        </a>
+                        <a href="{{ url_for('tutor.settings_availability') }}" 
+                           class="settings-nav-item {% if active_section == 'availability' %}active{% endif %}"
+                           data-section="availability">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            Availability
                         </a>
                         <a href="{{ url_for('tutor.settings_privacy') }}" 
                            class="settings-nav-item {% if active_section == 'privacy' %}active{% endif %}"
@@ -60,6 +66,8 @@
                 {% include 'tutor/settings/appearance.html' %}
             {% elif active_section == 'notifications' %}
                 {% include 'tutor/settings/notifications.html' %}
+            {% elif active_section == 'availability' %}
+                {% include 'tutor/settings/availability.html' %}
             {% elif active_section == 'privacy' %}
                 {% include 'tutor/settings/privacy.html' %}
             {% else %}
