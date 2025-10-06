@@ -46,6 +46,44 @@
                     </div>
                 </div>
 
+                <!-- Availability Section -->
+                {% if availability %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-clock text-cyan-400 mr-2"></i>
+                        Availability
+                    </h3>
+                    <div class="space-y-2">
+                        {% set days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] %}
+                        {% set day_names = {'monday': 'Mon', 'tuesday': 'Tue', 'wednesday': 'Wed', 'thursday': 'Thu', 'friday': 'Fri', 'saturday': 'Sat', 'sunday': 'Sun'} %}
+
+                        {% for day in days %}
+                            {% if availability.get(day) %}
+                                {% set available_slots = [] %}
+                                {% for slot in availability[day] %}
+                                    {% if slot.is_available %}
+                                        {% set _ = available_slots.append(slot) %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if available_slots %}
+                                <div class="flex items-center justify-between p-3 bg-slate-700 rounded-lg">
+                                    <span class="text-gray-300 font-medium">{{ day_names[day] }}</span>
+                                    <div class="text-right">
+                                        {% for slot in available_slots %}
+                                            <div class="text-cyan-400 text-sm">
+                                                {{ slot.start_time_local }} - {{ slot.end_time_local }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Contact Button -->
                 {% if session.user_id and session.user_role == 'student' %}
                 <button onclick="openMessageModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">

@@ -134,15 +134,32 @@ def tutorsearch():
 def tutor_detail(tutor_id):
     """Display detailed information about a specific tutor."""
     from models.tutor import Tutor
-    
+    from models.availability import TutorAvailability
+
     tutor = Tutor.query.get_or_404(tutor_id)
-    
+
     # Check if tutor is active
     if not tutor.is_active:
         flash('This tutor profile is not available.', 'error')
         return redirect(url_for('main.tutorsearch'))
-    
-    return render_template('tutor_detail.html', tutor=tutor)
+
+    # Get tutor availability and convert to local timezone
+    availability_slots = TutorAvailability.get_tutor_availability(tutor_id)
+    availability = {}
+
+    if availability_slots and tutor.timezone:
+        for day, slots in availability_slots.items():
+            day_name = day.name.lower()
+            availability[day_name] = []
+            for slot in slots:
+                local_start, local_end = slot.get_local_times(tutor.timezone)
+                availability[day_name].append({
+                    'start_time_local': local_start.strftime('%H:%M'),
+                    'end_time_local': local_end.strftime('%H:%M'),
+                    'is_available': slot.is_available
+                })
+
+    return render_template('tutor_detail.html', tutor=tutor, availability=availability)
 
 
 @main_bp.route('/send_message', methods=['POST'])
