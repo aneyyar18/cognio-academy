@@ -565,24 +565,42 @@ def view_message(message_id):
 @login_required
 @role_required(['tutor'])
 def bookings():
-    """View all bookings for the tutor."""
+    """View all bookings for the tutor with pagination."""
     from models.booking import Booking, BookingStatus
 
     tutor_id = session.get('user_id')
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
 
-    # Get all bookings for this tutor, ordered by date (newest first)
-    all_bookings = Booking.query.filter_by(tutor_id=tutor_id)\
-                                 .order_by(Booking.booking_date.desc(),
-                                          Booking.start_time.desc())\
-                                 .all()
+    # Get paginated bookings for this tutor, ordered by date (newest first)
+    pagination_obj = Booking.query.filter_by(tutor_id=tutor_id)\
+                                   .order_by(Booking.booking_date.desc(),
+                                            Booking.start_time.desc())\
+                                   .paginate(page=page, per_page=per_page, error_out=False)
 
-    # Calculate counts by status
+    # Get all bookings for status counts
+    all_bookings = Booking.query.filter_by(tutor_id=tutor_id).all()
     pending_count = sum(1 for b in all_bookings if b.status == BookingStatus.PENDING)
     confirmed_count = sum(1 for b in all_bookings if b.status == BookingStatus.CONFIRMED)
     completed_count = sum(1 for b in all_bookings if b.status == BookingStatus.COMPLETED)
 
+    # Create pagination info
+    pagination = {
+        'page': page,
+        'pages': pagination_obj.pages,
+        'total': pagination_obj.total,
+        'has_prev': pagination_obj.has_prev,
+        'has_next': pagination_obj.has_next,
+        'prev_num': pagination_obj.prev_num,
+        'next_num': pagination_obj.next_num,
+        'start_index': (page - 1) * per_page + 1 if pagination_obj.items else 0,
+        'end_index': min(page * per_page, pagination_obj.total),
+        'iter_pages': lambda **kwargs: pagination_obj.iter_pages(**kwargs)
+    }
+
     return render_template('tutor/bookings.html',
-                         bookings=all_bookings,
+                         bookings=pagination_obj.items,
+                         pagination=pagination,
                          total_bookings=len(all_bookings),
                          pending_count=pending_count,
                          confirmed_count=confirmed_count,
