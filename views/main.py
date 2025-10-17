@@ -3,7 +3,7 @@ Main views for the TutorConnect application.
 Contains routes for the homepage, about page, features page, etc.
 """
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
-from auth import authenticate_user, login_user
+from auth import authenticate_user, login_user, login_required, role_required
 from db import db
 
 # Create a Blueprint for the main routes
@@ -280,3 +280,133 @@ def login():
 
     # Render login form for GET requests and failed POST requests
     return render_template('login.html')
+
+
+@main_bp.route('/book_session/<int:tutor_id>')
+@login_required
+@role_required(['student'])
+def book_session(tutor_id):
+    """Show booking calendar for a specific tutor."""
+    from models.tutor import Tutor
+    from models.availability import TutorAvailability
+    from models.booking import Booking
+    from datetime import date, timedelta
+
+    tutor = Tutor.query.get_or_404(tutor_id)
+
+    # Check if tutor is active
+    if not tutor.is_active:
+        flash('This tutor is not available for booking.', 'error')
+        return redirect(url_for('main.tutorsearch'))
+
+    # Get date range for next 7 days (starting tomorrow)
+    start_date = date.today() + timedelta(days=1)
+    end_date = start_date + timedelta(days=6)
+
+    # Get tutor's availability
+    availability_slots = TutorAvailability.get_tutor_availability(tutor_id)
+
+    # Get existing bookings for this date range
+    existing_bookings = Booking.get_tutor_bookings_for_date_range(tutor_id, start_date, end_date)
+
+    # Convert to a format that's easier to work with in the template
+    availability_calendar = {}
+    booking_calendar = {}
+
+    # Process availability
+    if availability_slots and tutor.timezone:
+        for day, slots in availability_slots.items():
+            day_name = day.name.lower()
+            availability_calendar[day_name] = []
+            for slot in slots:
+                if slot.is_available:
+                    local_start, local_end = slot.get_local_times(tutor.timezone)
+                    availability_calendar[day_name].append({
+                        'start_time': local_start.strftime('%H:%M'),
+                        'end_time': local_end.strftime('%H:%M'),
+                        'start_time_obj': local_start,
+                        'end_time_obj': local_end
+                    })
+
+    # Process existing bookings
+    for booking in existing_bookings:
+        date_str = booking.booking_date.strftime('%Y-%m-%d')
+        if date_str not in booking_calendar:
+            booking_calendar[date_str] = []
+
+        if tutor.timezone:
+            local_start, local_end = booking.get_local_times(tutor.timezone)
+            booking_calendar[date_str].append({
+                'start_time': local_start.strftime('%H:%M'),
+                'end_time': local_end.strftime('%H:%M')
+            })
+
+    # Generate date range for template
+    date_range = []
+    current_date = start_date
+    while current_date <= end_date:
+        day_name = current_date.strftime('%A').lower()
+        date_range.append({
+            'date': current_date,
+            'date_str': current_date.strftime('%Y-%m-%d'),
+            'display_date': current_date.strftime('%B %d, %Y'),
+            'day_name': day_name,
+            'short_day': current_date.strftime('%a'),
+            'availability': availability_calendar.get(day_name, []),
+            'bookings': booking_calendar.get(current_date.strftime('%Y-%m-%d'), [])
+        })
+        current_date += timedelta(days=1)
+
+    return render_template('booking_calendar.html',
+                         tutor=tutor,
+                         date_range=date_range,
+                         tutor_timezone=tutor.timezone)
+
+
+@main_bp.route('/confirm_booking/<int:tutor_id>', methods=['POST'])
+@login_required
+@role_required(['student'])
+def confirm_booking(tutor_id):
+    """Process a booking request."""
+    from models.tutor import Tutor
+    from models.booking import Booking
+    from datetime import datetime, date
+
+    tutor = Tutor.query.get_or_404(tutor_id)
+    student_id = session.get('user_id')
+
+    # Get form data
+    booking_date_str = request.form.get('booking_date')
+    start_time_str = request.form.get('start_time')
+    end_time_str = request.form.get('end_time')
+    subject = request.form.get('subject')
+    notes = request.form.get('notes')
+
+    if not all([booking_date_str, start_time_str, end_time_str]):
+        flash('Missing required booking information.', 'error')
+        return redirect(url_for('main.book_session', tutor_id=tutor_id))
+
+    try:
+        booking_date = datetime.strptime(booking_date_str, '%Y-%m-%d').date()
+    except ValueError:
+        flash('Invalid date format.', 'error')
+        return redirect(url_for('main.book_session', tutor_id=tutor_id))
+
+    # Create the booking
+    booking, error_message = Booking.create_booking(
+        student_id=student_id,
+        tutor_id=tutor_id,
+        booking_date=booking_date,
+        start_time_str=start_time_str,
+        end_time_str=end_time_str,
+        subject=subject,
+        notes=notes
+    )
+
+    if booking:
+        flash('Your session has been booked successfully! The tutor will confirm your appointment.', 'success')
+        current_app.logger.info(f"Booking created: Student {student_id} booked with Tutor {tutor_id} for {booking_date}")
+        return redirect(url_for('student.dashboard'))
+    else:
+        flash(error_message, 'error')
+        return redirect(url_for('main.book_session', tutor_id=tutor_id))

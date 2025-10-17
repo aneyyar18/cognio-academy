@@ -84,11 +84,21 @@
                 </div>
                 {% endif %}
 
-                <!-- Contact Button -->
+                <!-- Debug Info -->
+                <div class="mb-4 bg-yellow-900 bg-opacity-50 border border-yellow-700 rounded-lg p-3 text-yellow-200 text-sm">
+                    <strong>Debug:</strong> user_id={{ session.get('user_id', 'None') }}, user_role={{ session.get('user_role', 'None') }}
+                </div>
+
+                <!-- Action Buttons -->
                 {% if session.user_id and session.user_role == 'student' %}
-                <button onclick="openMessageModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-envelope mr-2"></i>Send Message
-                </button>
+                <div class="space-y-3">
+                    <a href="{{ url_for('main.book_session', tutor_id=tutor.id) }}" class="block w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-center">
+                        <i class="fas fa-calendar-plus mr-2"></i>Book Session
+                    </a>
+                    <button onclick="openMessageModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-envelope mr-2"></i>Send Message
+                    </button>
+                </div>
                 {% elif not session.user_id %}
                 <a href="{{ url_for('main.login') }}" class="block w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 text-center">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login to Contact
