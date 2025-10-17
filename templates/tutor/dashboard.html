@@ -80,14 +80,55 @@
 
         <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden">
             <div class="bg-cyan-600 text-white p-4">
-                <h5 class="font-semibold flex items-center"><i class="fas fa-calendar-alt mr-2"></i>Upcoming Sessions</h5>
+                <h5 class="font-semibold flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>Upcoming Sessions
+                    {% if pending_count > 0 %}
+                        <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full ml-2">{{ pending_count }} Pending</span>
+                    {% endif %}
+                </h5>
             </div>
             <div class="p-6">
-                <div class="text-center py-6">
-                    <i class="fas fa-calendar-plus text-cyan-400 mb-4" style="font-size: 2rem; opacity: 0.7;"></i>
-                    <p class="text-gray-400 mb-2">No sessions scheduled yet</p>
-                    <small class="text-gray-500">Students will book sessions with you here</small>
-                </div>
+                {% if upcoming_bookings %}
+                    <div class="space-y-3 mb-4">
+                        {% for booking in upcoming_bookings %}
+                            <div class="p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors duration-300">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-user-graduate text-cyan-400 mr-2"></i>
+                                        <span class="text-white font-medium text-sm">{{ booking.student.fullname }}</span>
+                                    </div>
+                                    {% if booking.status.value == 'pending' %}
+                                        <span class="bg-yellow-500 text-xs px-2 py-1 rounded text-white">Pending</span>
+                                    {% elif booking.status.value == 'confirmed' %}
+                                        <span class="bg-green-500 text-xs px-2 py-1 rounded text-white">Confirmed</span>
+                                    {% endif %}
+                                </div>
+                                <div class="text-gray-400 text-xs space-y-1">
+                                    {% if booking.booking_date %}
+                                        <div><i class="fas fa-calendar mr-1"></i>{{ booking.booking_date.strftime('%b %d, %Y') }}</div>
+                                    {% endif %}
+                                    {% if booking.start_time and booking.end_time %}
+                                        <div><i class="fas fa-clock mr-1"></i>{{ booking.start_time.strftime('%I:%M %p') }} - {{ booking.end_time.strftime('%I:%M %p') }}</div>
+                                    {% endif %}
+                                    {% if booking.subject %}
+                                        <div><i class="fas fa-book mr-1"></i>{{ booking.subject }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center pt-3 border-t border-slate-700">
+                        <a href="{{ url_for('tutor.bookings') }}" class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">
+                            View All Bookings ({{ total_upcoming }})
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-6">
+                        <i class="fas fa-calendar-plus text-cyan-400 mb-4" style="font-size: 2rem; opacity: 0.7;"></i>
+                        <p class="text-gray-400 mb-2">No sessions scheduled yet</p>
+                        <small class="text-gray-500">Students will book sessions with you here</small>
+                    </div>
+                {% endif %}
             </div>
         </div>
         

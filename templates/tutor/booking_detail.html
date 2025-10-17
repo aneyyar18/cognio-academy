@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Details | Cognio Academy{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-calendar-check text-cyan-400 mr-2"></i>Booking Details
+                </h1>
+                <p class="text-gray-400">Manage this tutoring session</p>
+            </div>
+            <a href="{{ url_for('tutor.bookings') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Bookings
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Booking Info -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Status Banner -->
+            <div class="bg-slate-800 rounded-lg shadow-lg border-l-4 p-6
+                {% if booking.status.value == 'pending' %}border-yellow-500
+                {% elif booking.status.value == 'confirmed' %}border-green-500
+                {% elif booking.status.value == 'cancelled' %}border-red-500
+                {% elif booking.status.value == 'completed' %}border-blue-500
+                {% endif %}">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-white font-semibold text-lg mb-1">
+                            {% if booking.status.value == 'pending' %}
+                                <i class="fas fa-clock text-yellow-400 mr-2"></i>Pending Your Action
+                            {% elif booking.status.value == 'confirmed' %}
+                                <i class="fas fa-check-circle text-green-400 mr-2"></i>Confirmed
+                            {% elif booking.status.value == 'cancelled' %}
+                                <i class="fas fa-times-circle text-red-400 mr-2"></i>Cancelled
+                            {% elif booking.status.value == 'completed' %}
+                                <i class="fas fa-check-double text-blue-400 mr-2"></i>Completed
+                            {% endif %}
+                        </h3>
+                        <p class="text-gray-400 text-sm">
+                            {% if booking.status.value == 'pending' %}
+                                Please review and accept or decline this booking request
+                            {% elif booking.status.value == 'confirmed' %}
+                                This session is confirmed and scheduled
+                            {% elif booking.status.value == 'cancelled' %}
+                                This session has been cancelled
+                            {% elif booking.status.value == 'completed' %}
+                                This session has been completed
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Details -->
+            <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-4">
+                    <h3 class="text-xl font-semibold"><i class="fas fa-info-circle mr-2"></i>Session Information</h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        {% if booking.booking_date %}
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-calendar text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <label class="text-gray-400 text-sm">Date</label>
+                                    <p class="text-white font-medium">{{ booking.booking_date.strftime('%A, %B %d, %Y') }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if booking.start_time and booking.end_time %}
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-clock text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <label class="text-gray-400 text-sm">Time</label>
+                                    <p class="text-white font-medium">{{ booking.start_time.strftime('%I:%M %p') }} - {{ booking.end_time.strftime('%I:%M %p') }}</p>
+                                    {% if duration %}
+                                        <p class="text-gray-500 text-xs mt-1">Duration: {{ duration }} minutes</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if booking.subject %}
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-book text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <label class="text-gray-400 text-sm">Subject</label>
+                                    <p class="text-white font-medium">{{ booking.subject }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if booking.notes %}
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-sticky-note text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="text-gray-400 text-sm">Student Notes</label>
+                                    <div class="bg-slate-700 rounded p-3 mt-1">
+                                        <p class="text-white">{{ booking.notes }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if booking.created_at %}
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-history text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <label class="text-gray-400 text-sm">Booking History</label>
+                                    <p class="text-white text-sm">Created: {{ booking.created_at.strftime('%b %d, %Y at %I:%M %p') }}</p>
+                                    {% if booking.updated_at and booking.updated_at != booking.created_at %}
+                                        <p class="text-white text-sm">Updated: {{ booking.updated_at.strftime('%b %d, %Y at %I:%M %p') }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            {% if booking.status.value in ['pending', 'confirmed'] %}
+                <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden">
+                    <div class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-4">
+                        <h3 class="text-xl font-semibold"><i class="fas fa-tasks mr-2"></i>Actions</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {% if booking.status.value == 'pending' %}
+                                <form method="POST" action="{{ url_for('tutor.confirm_booking', booking_id=booking.id) }}" class="w-full">
+                                    <button type="submit" class="btn-primary w-full">
+                                        <i class="fas fa-check mr-2"></i>Accept
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            {% if booking.status.value in ['pending', 'confirmed'] %}
+                                <button type="button" onclick="openRescheduleModal()" class="btn-secondary w-full">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Reschedule
+                                </button>
+
+                                <button type="button" onclick="openCancelModal()" class="btn-danger w-full">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Student Info Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-4">
+                    <h3 class="text-xl font-semibold"><i class="fas fa-user-graduate mr-2"></i>Student</h3>
+                </div>
+                <div class="p-6">
+                    <div class="text-center mb-4">
+                        <div class="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-graduate text-cyan-400 text-3xl"></i>
+                        </div>
+                        <h4 class="text-white font-semibold text-lg">{{ booking.student.fullname }}</h4>
+                        <p class="text-gray-400 text-sm">{{ booking.student.email }}</p>
+                    </div>
+
+                    <div class="border-t border-slate-700 pt-4 space-y-3">
+                        {% if booking.student.phone %}
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-cyan-400 mr-3"></i>
+                                <span class="text-gray-300 text-sm">{{ booking.student.phone }}</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-cyan-400 mr-3"></i>
+                            <span class="text-gray-300 text-sm">{{ booking.student.timezone }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <a href="{{ url_for('main.send_message', receiver_id=booking.student_id) }}" class="btn-secondary w-full text-center block">
+                            <i class="fas fa-envelope mr-2"></i>Send Message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-semibold text-white mb-4">
+            <i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i>Cancel Booking
+        </h3>
+        <p class="text-gray-300 mb-6">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+        <div class="flex justify-end space-x-3">
+            <button type="button" onclick="closeCancelModal()" class="btn-secondary">
+                No, Keep It
+            </button>
+            <form method="POST" action="{{ url_for('tutor.cancel_booking', booking_id=booking.id) }}" class="inline">
+                <button type="submit" class="btn-danger">
+                    Yes, Cancel Booking
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reschedule Modal -->
+<div id="rescheduleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-semibold text-white mb-4">
+            <i class="fas fa-calendar-alt text-cyan-400 mr-2"></i>Reschedule Booking
+        </h3>
+        <form method="POST" action="{{ url_for('tutor.reschedule_booking', booking_id=booking.id) }}">
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-gray-300 text-sm font-medium mb-2">New Date</label>
+                    <input type="date" name="new_date" required
+                           min="{{ min_date }}" max="{{ max_date }}"
+                           class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Start Time</label>
+                        <input type="time" name="new_start_time" required
+                               class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">End Time</label>
+                        <input type="time" name="new_end_time" required
+                               class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeRescheduleModal()" class="btn-secondary">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-check mr-2"></i>Reschedule
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openCancelModal() {
+    document.getElementById('cancelModal').style.display = 'flex';
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').style.display = 'none';
+}
+
+function openRescheduleModal() {
+    document.getElementById('rescheduleModal').style.display = 'flex';
+}
+
+function closeRescheduleModal() {
+    document.getElementById('rescheduleModal').style.display = 'none';
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const cancelModal = document.getElementById('cancelModal');
+    const rescheduleModal = document.getElementById('rescheduleModal');
+    if (event.target == cancelModal) {
+        closeCancelModal();
+    }
+    if (event.target == rescheduleModal) {
+        closeRescheduleModal();
+    }
+}
+</script>
+{% endblock %}
